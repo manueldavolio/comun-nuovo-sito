@@ -33,6 +33,11 @@ export function NewsSidebar({ activeCategorySlug, excludeSlug }: NewsSidebarProp
   return (
     <aside className="space-y-6 lg:sticky lg:top-28 lg:self-start">
       <SidebarBlock title="Ultime news">
+        {latest.length === 0 ? (
+          <p className="text-sm leading-relaxed text-slate-600">
+            Le news ufficiali verranno pubblicate a breve.
+          </p>
+        ) : (
         <ul className="space-y-4">
           {latest.map((item) => (
             <li key={item.slug}>
@@ -67,6 +72,7 @@ export function NewsSidebar({ activeCategorySlug, excludeSlug }: NewsSidebarProp
             </li>
           ))}
         </ul>
+        )}
       </SidebarBlock>
 
       <SidebarBlock title="Categorie">

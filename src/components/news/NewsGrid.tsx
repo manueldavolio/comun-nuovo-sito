@@ -1,20 +1,33 @@
 import Link from "next/link";
 import { NewsCard } from "@/components/news/NewsCard";
+import { ContentPlaceholder } from "@/components/ui/ContentPlaceholder";
 import type { NewsItem } from "@/types/site";
 
 type NewsGridProps = {
   items: NewsItem[];
+  categoryFilter?: string;
 };
 
-export function NewsGrid({ items }: NewsGridProps) {
+export function NewsGrid({ items, categoryFilter }: NewsGridProps) {
   if (items.length === 0) {
+    if (categoryFilter) {
+      return (
+        <p className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center text-slate-600">
+          Nessuna news in questa categoria.{" "}
+          <Link href="/news" className="font-semibold text-sky-700 hover:text-sky-900">
+            Vedi tutte le news
+          </Link>
+        </p>
+      );
+    }
+
     return (
-      <p className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center text-slate-600">
-        Nessuna news in questa categoria.{" "}
-        <Link href="/news" className="font-semibold text-sky-700 hover:text-sky-900">
-          Vedi tutte le news
-        </Link>
-      </p>
+      <ContentPlaceholder
+        badge="COMING SOON"
+        eyebrow="News"
+        title="News in arrivo"
+        message="Le news ufficiali verranno pubblicate a breve."
+      />
     );
   }
 

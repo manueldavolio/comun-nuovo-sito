@@ -1,3 +1,4 @@
+import { ContentPlaceholder } from "@/components/ui/ContentPlaceholder";
 import { SponsorBecomeSection } from "@/components/sponsors/SponsorBecomeSection";
 import { SponsorClubStats } from "@/components/sponsors/SponsorClubStats";
 import { SponsorHero } from "@/components/sponsors/SponsorHero";
@@ -8,6 +9,8 @@ import {
   sponsorBenefits,
   sponsorClubStats,
   sponsorHero,
+  sponsors,
+  sponsorsEmptyState,
   sponsorTierSections,
 } from "@/data/sponsors";
 
@@ -28,14 +31,25 @@ export default function SponsorPage() {
 
       <div className="bg-[var(--club-page)]">
         <div className="page-content">
-          {sponsorTierSections.map(({ tier, label }) => (
-            <SponsorTierSection
-              key={tier}
-              tier={tier}
-              label={label}
-              sponsors={getSponsorsByTier(tier)}
-            />
-          ))}
+          {sponsors.length === 0 ? (
+            <div className="mb-14 sm:mb-16">
+              <ContentPlaceholder
+                badge={sponsorsEmptyState.badge}
+                eyebrow="Partner"
+                title={sponsorsEmptyState.title}
+                message={sponsorsEmptyState.message}
+              />
+            </div>
+          ) : (
+            sponsorTierSections.map(({ tier, label }) => (
+              <SponsorTierSection
+                key={tier}
+                tier={tier}
+                label={label}
+                sponsors={getSponsorsByTier(tier)}
+              />
+            ))
+          )}
 
           <SponsorBecomeSection
             title={sponsorBecome.title}

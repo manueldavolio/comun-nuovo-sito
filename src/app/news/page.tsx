@@ -36,7 +36,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
           ) : null}
 
           <div className="grid gap-10 lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_340px] xl:gap-12">
-            <NewsGrid items={items} />
+            <NewsGrid items={items} categoryFilter={categoria} />
             <NewsSidebar activeCategorySlug={categoria} />
           </div>
         </div>

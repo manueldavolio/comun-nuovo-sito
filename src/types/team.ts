@@ -53,6 +53,13 @@ export type LatestMatchday = {
   matches: MatchdayFixture[];
 };
 
+export type RosterEmptyState = {
+  badge?: string;
+  eyebrow?: string;
+  title: string;
+  message: string;
+};
+
 export type TeamPageData = {
   teamLabel: string;
   teamSeason: string;
@@ -66,4 +73,5 @@ export type TeamPageData = {
   competitionLabel?: string;
   latestMatchday?: LatestMatchday;
   standingsSubtitle?: string;
+  rosterEmptyState?: RosterEmptyState;
 };
