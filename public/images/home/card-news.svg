@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400" viewBox="0 0 640 400" fill="none">
+  <defs>
+    <linearGradient id="n" x1="0" y1="0" x2="640" y2="400" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#001b3d"/>
+      <stop offset="0.45" stop-color="#005a9e"/>
+      <stop offset="1" stop-color="#003f8f"/>
+    </linearGradient>
+  </defs>
+  <rect width="640" height="400" fill="url(#n)"/>
+  <rect x="160" y="90" width="320" height="230" rx="8" fill="#ffffff" fill-opacity="0.06" stroke="#009dff" stroke-opacity="0.35" stroke-width="2"/>
+  <rect x="190" y="130" width="200" height="10" rx="2" fill="#ffffff" fill-opacity="0.2"/>
+  <rect x="190" y="155" width="260" height="8" rx="2" fill="#ffffff" fill-opacity="0.12"/>
+  <rect x="190" y="175" width="240" height="8" rx="2" fill="#ffffff" fill-opacity="0.12"/>
+  <rect x="190" y="195" width="180" height="8" rx="2" fill="#ffffff" fill-opacity="0.12"/>
+  <circle cx="480" cy="320" r="44" fill="#009dff" fill-opacity="0.12"/>
+  <path d="M465 315 L495 315 M480 300 L480 330" stroke="#009dff" stroke-opacity="0.5" stroke-width="3" stroke-linecap="round"/>
+  <text x="320" y="52" text-anchor="middle" fill="#7dd3fc" fill-opacity="0.95" font-family="system-ui,sans-serif" font-size="14" font-weight="700" letter-spacing="0.22em">NEWS</text>
+</svg>
