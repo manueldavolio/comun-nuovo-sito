@@ -4,6 +4,7 @@ import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { clubLogoPath, clubName } from "@/data/site";
+import { buildSiteIcons } from "@/lib/site-icons";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -20,15 +21,12 @@ const bebas = Bebas_Neue({
 export const metadata: Metadata = {
   metadataBase: new URL("https://comunnuovocalcio.it"),
   title: {
-    default: `${clubName} | Sito ufficiale`,
+    default: clubName,
     template: `%s | ${clubName}`,
   },
   description:
     "Sito ufficiale dell’ASD Comun Nuovo: squadre, settore giovanile, news, media e contatti.",
-  icons: {
-    icon: [{ url: clubLogoPath, type: "image/png" }],
-    apple: [{ url: clubLogoPath, type: "image/png" }],
-  },
+  icons: buildSiteIcons(),
   openGraph: {
     title: clubName,
     description: "Passione, territorio e futuro sul campo e nella comunità.",
