@@ -10,8 +10,8 @@ export function Hero() {
     >
       <div className="pointer-events-none absolute inset-0 hero-home-dots opacity-[0.28]" aria-hidden />
 
-      <div className="relative z-10 mx-auto flex h-full w-full max-w-[1280px] flex-col px-4 pb-[max(5.5rem,calc(3rem+50px))] pt-4 sm:px-5 sm:pb-[max(5rem,calc(2.5rem+50px))] lg:flex-row lg:items-stretch lg:gap-4 lg:pb-8 lg:pl-6 lg:pr-4 lg:pt-0 xl:pl-8 xl:pr-5">
-        <div className="relative z-20 flex min-h-0 flex-1 flex-col justify-center lg:max-w-[min(100%,480px)] lg:shrink-0 lg:py-0 lg:pr-2 xl:max-w-[min(100%,500px)]">
+      <div className="relative z-10 mx-auto flex h-full w-full max-w-[1280px] flex-col gap-5 px-4 pb-[max(6.25rem,calc(3.75rem+50px))] pt-9 sm:px-5 md:gap-0 md:pb-[max(5rem,calc(2.5rem+50px))] md:pt-4 lg:flex-row lg:items-stretch lg:gap-4 lg:pb-8 lg:pl-6 lg:pr-4 lg:pt-0 xl:pl-8 xl:pr-5">
+        <div className="relative z-20 flex min-h-0 flex-1 flex-col justify-start md:justify-center lg:max-w-[min(100%,480px)] lg:shrink-0 lg:py-0 lg:pr-2 xl:max-w-[min(100%,500px)]">
           <div className="flex items-center gap-3 sm:gap-3.5">
             <Image
               src="/logo.png"
@@ -24,13 +24,13 @@ export function Hero() {
             />
           </div>
 
-          <p className="mt-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#009dff] sm:mt-3 sm:text-[11px]">
+          <p className="mt-3.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#009dff] md:mt-2.5 sm:mt-3 sm:text-[11px]">
             {clubNameFormal}
           </p>
 
           <h1
             id="hero-heading"
-            className="mt-0.5 font-display text-[clamp(2.15rem,6.2vw,3.85rem)] uppercase leading-[0.88] tracking-[0.03em] sm:text-[clamp(2.35rem,5.4vw,3.95rem)] lg:mt-1"
+            className="mt-1.5 font-display text-[clamp(2.15rem,6.2vw,3.85rem)] uppercase leading-[0.88] tracking-[0.03em] md:mt-0.5 sm:text-[clamp(2.35rem,5.4vw,3.95rem)] lg:mt-1"
           >
             <span className="block text-white">CUORE</span>
             <span className="block text-white">
@@ -39,9 +39,9 @@ export function Hero() {
             <span className="block text-white">SUL TERRITORIO</span>
           </h1>
 
-          <p className="mt-2 max-w-[26rem] text-[12px] leading-snug text-white/85 sm:mt-2.5 sm:text-[13px]">{claim}</p>
+          <p className="mt-3 max-w-[26rem] text-[12px] leading-snug text-white/85 md:mt-2.5 sm:text-[13px]">{claim}</p>
 
-          <div className="mt-3 flex flex-wrap gap-2 sm:mt-3.5 sm:gap-2.5">
+          <div className="mt-4 flex flex-wrap gap-2 md:mt-3 sm:mt-3.5 sm:gap-2.5">
             <Link
               href="/societa"
               className="inline-flex items-center justify-center gap-1 rounded-md bg-[#009dff] px-4 py-2 text-[9px] font-bold uppercase tracking-[0.12em] text-[#001428] shadow-[0_6px_24px_-8px_rgba(0,157,255,0.65)] transition hover:bg-[#33b0ff] sm:px-5 sm:py-2.5 sm:text-[10px]"

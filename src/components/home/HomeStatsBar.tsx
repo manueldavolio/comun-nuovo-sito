@@ -56,7 +56,7 @@ const statBar = [
 
 export function HomeStatsBar() {
   return (
-    <div className="relative z-10 -mt-7 px-3 sm:-mt-8 sm:px-5 lg:-mt-7 lg:px-6">
+    <div className="relative z-10 -mt-4 px-3 md:-mt-7 sm:px-5 lg:-mt-7 lg:px-6">
       <div className="site-container-home">
         <div
           className="flex min-h-[56px] snap-x snap-mandatory overflow-x-auto rounded-[14px] border border-[#e8ecf0] bg-white shadow-[0_12px_40px_-18px_rgba(0,27,61,0.18)] md:grid md:min-h-[60px] md:grid-cols-5 md:overflow-visible md:snap-none"
