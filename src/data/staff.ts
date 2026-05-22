@@ -122,7 +122,7 @@ export const staffMembers: StaffMember[] = [
   {
     id: "ps-4",
     name: "Stefano Avogadri",
-    role: "Collaboratore",
+    role: "Preparatore Portieri",
     category: "Prima Squadra",
     photo: staffPhoto(6),
     description: "Contribuisce alla crescita tecnica e al clima di squadra.",

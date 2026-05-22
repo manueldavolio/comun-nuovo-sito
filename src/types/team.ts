@@ -16,6 +16,7 @@ export type TechnicalStaffRole =
   | "Collaboratore"
   | "Coordinatrice"
   | "Preparatore"
+  | "Preparatore Portieri"
   | "Dirigente"
   | "Osteopata";
 
