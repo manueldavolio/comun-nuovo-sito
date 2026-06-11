@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Bebas_Neue, Inter } from "next/font/google";
 import "./globals.css";
-import { Footer } from "@/components/layout/Footer";
-import { Header } from "@/components/layout/Header";
+import { SiteChrome } from "@/components/layout/SiteChrome";
 import { clubLogoPath, clubName } from "@/data/site";
 import { buildSiteIcons } from "@/lib/site-icons";
 
@@ -48,11 +47,7 @@ export default function RootLayout({
   return (
     <html lang="it" className={`${inter.variable} ${bebas.variable} h-full antialiased`}>
       <body className="min-h-full bg-[#f3f7fb] text-[#001b3d]">
-        <div className="flex min-h-full flex-col">
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );
