@@ -2,6 +2,7 @@ import { NewsGrid } from "@/components/news/NewsGrid";
 import { NewsHero } from "@/components/news/NewsHero";
 import { NewsSidebar } from "@/components/news/NewsSidebar";
 import { getAllNews, slugToCategory } from "@/data/news";
+import { fetchSiteNews } from "@/lib/cms";
 import type { NewsCategory } from "@/types/site";
 
 export const metadata = {
@@ -9,6 +10,9 @@ export const metadata = {
   description:
     "Ultime news dal mondo biancoazzurro: prima squadra, femminile, settore giovanile, eventi e società.",
 };
+
+/** Ricontrolla il database CMS ogni 5 minuti */
+export const revalidate = 300;
 
 type NewsPageProps = {
   searchParams: Promise<{ categoria?: string }>;
@@ -18,9 +22,12 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
   const { categoria } = await searchParams;
   const categoryFilter: NewsCategory | undefined = categoria ? slugToCategory(categoria) : undefined;
 
-  const items = categoryFilter
-    ? getAllNews().filter((n) => n.category === categoryFilter)
-    : getAllNews();
+  // News dal CMS (gestionale) + eventuali news statiche
+  const cmsNews = await fetchSiteNews();
+  const staticNews = getAllNews().filter((n) => !cmsNews.some((c) => c.slug === n.slug));
+  const allNews = [...cmsNews, ...staticNews].sort((a, b) => b.date.localeCompare(a.date));
+
+  const items = categoryFilter ? allNews.filter((n) => n.category === categoryFilter) : allNews;
 
   return (
     <div>
@@ -37,7 +44,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
 
           <div className="grid gap-10 lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_340px] xl:gap-12">
             <NewsGrid items={items} categoryFilter={categoria} />
-            <NewsSidebar activeCategorySlug={categoria} />
+            <NewsSidebar activeCategorySlug={categoria} items={allNews} />
           </div>
         </div>
       </div>

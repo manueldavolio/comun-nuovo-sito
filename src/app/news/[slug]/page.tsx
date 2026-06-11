@@ -4,9 +4,13 @@ import { NewsGallery } from "@/components/news/NewsGallery";
 import { NewsShareButtons } from "@/components/news/NewsShareButtons";
 import { NewsSidebar } from "@/components/news/NewsSidebar";
 import { publicSiteUrl } from "@/data/site";
-import { getNewsBySlug, newsList } from "@/data/news";
+import { getAllNews, getNewsBySlug, newsList } from "@/data/news";
+import { fetchSiteNews, fetchSiteNewsBySlug } from "@/lib/cms";
 
 type Props = { params: Promise<{ slug: string }> };
+
+/** Ricontrolla il database CMS ogni 5 minuti */
+export const revalidate = 300;
 
 export function generateStaticParams() {
   return newsList.map((n) => ({ slug: n.slug }));
@@ -14,7 +18,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const item = getNewsBySlug(slug);
+  const item = (await fetchSiteNewsBySlug(slug)) ?? getNewsBySlug(slug);
   if (!item) return { title: "News" };
   return {
     title: item.title,
@@ -24,8 +28,12 @@ export async function generateMetadata({ params }: Props) {
 
 export default async function NewsDetailPage({ params }: Props) {
   const { slug } = await params;
-  const item = getNewsBySlug(slug);
+  const item = (await fetchSiteNewsBySlug(slug)) ?? getNewsBySlug(slug);
   if (!item) notFound();
+
+  const cmsNews = await fetchSiteNews();
+  const staticNews = getAllNews().filter((n) => !cmsNews.some((c) => c.slug === n.slug));
+  const allNews = [...cmsNews, ...staticNews].sort((a, b) => b.date.localeCompare(a.date));
 
   return (
     <article>
@@ -51,7 +59,7 @@ export default async function NewsDetailPage({ params }: Props) {
               <NewsShareButtons title={item.title} url={`${publicSiteUrl}/news/${item.slug}`} />
             </div>
 
-            <NewsSidebar excludeSlug={item.slug} />
+            <NewsSidebar excludeSlug={item.slug} items={allNews} />
           </div>
         </div>
       </div>

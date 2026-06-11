@@ -46,15 +46,29 @@ function IconHeart({ className }: { className?: string }) {
   );
 }
 
-const statBar = [
-  { value: String(foundationYear), label: "Anno di fondazione", Icon: IconCalendar },
-  { value: "8", label: "Squadre", Icon: IconUsers },
-  { value: "200+", label: "Tesserati", Icon: IconUsers },
-  { value: "4", label: "Campi", Icon: IconField },
-  { value: "1", label: "Grande famiglia", Icon: IconHeart },
-] as const;
+type HomeStatsBarProps = {
+  /** Valori dal CMS (Impostazioni sito); se assenti usa i valori statici */
+  settings?: {
+    foundationYear: number;
+    teamsCount: string;
+    membersCount: string;
+    fieldsCount: string;
+  } | null;
+};
 
-export function HomeStatsBar() {
+export function HomeStatsBar({ settings }: HomeStatsBarProps) {
+  const statBar = [
+    {
+      value: String(settings?.foundationYear ?? foundationYear),
+      label: "Anno di fondazione",
+      Icon: IconCalendar,
+    },
+    { value: settings?.teamsCount ?? "8", label: "Squadre", Icon: IconUsers },
+    { value: settings?.membersCount ?? "200+", label: "Tesserati", Icon: IconUsers },
+    { value: settings?.fieldsCount ?? "4", label: "Campi", Icon: IconField },
+    { value: "1", label: "Grande famiglia", Icon: IconHeart },
+  ];
+
   return (
     <div className="relative z-10 -mt-4 px-3 md:-mt-7 sm:px-5 lg:-mt-7 lg:px-6">
       <div className="site-container-home">

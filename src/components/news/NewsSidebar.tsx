@@ -1,11 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getFeaturedNews, getLatestNews, getNewsCategoriesWithCount } from "@/data/news";
+import { categoryToSlug, getFeaturedNews, getLatestNews, getNewsCategoriesWithCount } from "@/data/news";
 import { formatNewsDate } from "@/lib/news-format";
+import { NEWS_CATEGORIES, type NewsItem } from "@/types/site";
 
 type NewsSidebarProps = {
   activeCategorySlug?: string;
   excludeSlug?: string;
+  /** Elenco completo news (CMS + statiche); se omesso usa i dati statici */
+  items?: NewsItem[];
 };
 
 function SidebarBlock({
@@ -25,10 +28,22 @@ function SidebarBlock({
   );
 }
 
-export function NewsSidebar({ activeCategorySlug, excludeSlug }: NewsSidebarProps) {
-  const latest = getLatestNews(4, excludeSlug);
-  const featured = getFeaturedNews(2).filter((n) => n.slug !== excludeSlug);
-  const categories = getNewsCategoriesWithCount();
+export function NewsSidebar({ activeCategorySlug, excludeSlug, items }: NewsSidebarProps) {
+  const sorted = items ? [...items].sort((a, b) => b.date.localeCompare(a.date)) : null;
+
+  const latest = sorted
+    ? sorted.filter((n) => n.slug !== excludeSlug).slice(0, 4)
+    : getLatestNews(4, excludeSlug);
+  const featured = sorted
+    ? sorted.filter((n) => n.featured && n.slug !== excludeSlug).slice(0, 2)
+    : getFeaturedNews(2).filter((n) => n.slug !== excludeSlug);
+  const categories = sorted
+    ? NEWS_CATEGORIES.map((category) => ({
+        category,
+        slug: categoryToSlug(category),
+        count: sorted.filter((n) => n.category === category).length,
+      }))
+    : getNewsCategoriesWithCount();
 
   return (
     <aside className="space-y-6 lg:sticky lg:top-28 lg:self-start">

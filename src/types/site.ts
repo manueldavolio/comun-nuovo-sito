@@ -111,7 +111,8 @@ export type MediaGallerySectionName = (typeof MEDIA_GALLERY_SECTIONS)[number];
 
 export type MediaGallerySection = {
   id: string;
-  title: MediaGallerySectionName;
+  /** Titolo sezione/album (libero per gli album gestiti dal CMS) */
+  title: string;
   images: GalleryImage[];
 };
 

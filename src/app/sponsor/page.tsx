@@ -4,7 +4,6 @@ import { SponsorClubStats } from "@/components/sponsors/SponsorClubStats";
 import { SponsorHero } from "@/components/sponsors/SponsorHero";
 import { SponsorTierSection } from "@/components/sponsors/SponsorTierSection";
 import {
-  getSponsorsByTier,
   sponsorBecome,
   sponsorBenefits,
   sponsorClubStats,
@@ -13,6 +12,7 @@ import {
   sponsorsEmptyState,
   sponsorTierSections,
 } from "@/data/sponsors";
+import { fetchSiteSponsors } from "@/lib/cms";
 
 export const metadata = {
   title: "Sponsor",
@@ -20,7 +20,14 @@ export const metadata = {
     "I partner che sostengono A.S.D. Comun Nuovo: scopri i nostri sponsor e come diventare parte del progetto biancoazzurro.",
 };
 
-export default function SponsorPage() {
+/** Ricontrolla il database CMS ogni 5 minuti */
+export const revalidate = 300;
+
+export default async function SponsorPage() {
+  // Sponsor dal CMS (gestionale) + eventuali sponsor statici
+  const cmsSponsors = await fetchSiteSponsors();
+  const allSponsors = [...cmsSponsors, ...sponsors.filter((s) => !cmsSponsors.some((c) => c.id === s.id))];
+
   return (
     <div>
       <SponsorHero
@@ -31,7 +38,7 @@ export default function SponsorPage() {
 
       <div className="bg-[var(--club-page)]">
         <div className="page-content">
-          {sponsors.length === 0 ? (
+          {allSponsors.length === 0 ? (
             <div className="mb-14 sm:mb-16">
               <ContentPlaceholder
                 badge={sponsorsEmptyState.badge}
@@ -46,7 +53,7 @@ export default function SponsorPage() {
                 key={tier}
                 tier={tier}
                 label={label}
-                sponsors={getSponsorsByTier(tier)}
+                sponsors={allSponsors.filter((s) => s.tier === tier)}
               />
             ))
           )}
