@@ -26,9 +26,9 @@ export const teamPageData = {
   },
   roster: [
     { id: "ps-p1", name: "Mattia Claris", role: "Portiere" },
-    { id: "ps-p2", name: "Nicolò Rapizza", role: "Portiere" },
     { id: "ps-p16", name: "Ubaldo Quitti", role: "Portiere" },
     { id: "ps-p3", name: "Simone Panara", role: "Difensore" },
+    { id: "ps-p22", name: "Davide Cellauro", role: "Difensore" },
     { id: "ps-p4", name: "Lorenzo Salvi", role: "Difensore", photo: "/players/Lorenzo Salvi.jpeg" },
     { id: "ps-p5", name: "Edoardo Bolis", role: "Difensore", photo: "/players/Edoardo Bolis.jpeg" },
     { id: "ps-p7", name: "Enrico Mazzoleni", role: "Difensore" },
@@ -40,6 +40,7 @@ export const teamPageData = {
     { id: "ps-p12", name: "Emmanuel Marotta", role: "Centrocampista" },
     { id: "ps-p19", name: "Filippo Rota", role: "Centrocampista", photo: "/players/Filippo Rota.jpeg" },
     { id: "ps-p14", name: "Christian Meli", role: "Centrocampista" },
+    { id: "ps-p23", name: "Lorenzo Bruletti", role: "Centrocampista" },
     { id: "ps-p20", name: "Matteo Sibio", role: "Attaccante", photo: "/players/Matteo Sibio.jpeg" },
     { id: "ps-p15", name: "Ronny Colleoni", role: "Attaccante" },
     { id: "ps-p21", name: "Farouk Bance", role: "Attaccante", photo: "/players/Farouk Bance.jpeg" },
