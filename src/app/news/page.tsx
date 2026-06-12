@@ -22,10 +22,12 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
   const { categoria } = await searchParams;
   const categoryFilter: NewsCategory | undefined = categoria ? slugToCategory(categoria) : undefined;
 
-  // News dal CMS (gestionale) + eventuali news statiche
+  // Il database ha sempre priorità: le news statiche restano
+  // solo come fallback quando il database è vuoto.
   const cmsNews = await fetchSiteNews();
-  const staticNews = getAllNews().filter((n) => !cmsNews.some((c) => c.slug === n.slug));
-  const allNews = [...cmsNews, ...staticNews].sort((a, b) => b.date.localeCompare(a.date));
+  const allNews = [...(cmsNews.length > 0 ? cmsNews : getAllNews())].sort((a, b) =>
+    b.date.localeCompare(a.date),
+  );
 
   const items = categoryFilter ? allNews.filter((n) => n.category === categoryFilter) : allNews;
 

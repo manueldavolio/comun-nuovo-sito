@@ -1,6 +1,6 @@
 import { TeamLandingPage } from "@/components/teams/TeamLandingPage";
 import { teamPageData } from "@/data/teams/prima-squadra";
-import { fetchSitePlayers } from "@/lib/cms";
+import { fetchSitePlayers, fetchSiteTeamStaff } from "@/lib/cms";
 
 export const metadata = {
   title: "Prima Squadra",
@@ -10,9 +10,18 @@ export const metadata = {
 export const revalidate = 300;
 
 export default async function PrimaSquadraPage() {
-  // Rosa dal CMS (gestionale): se presente sostituisce quella statica.
-  const cmsRoster = await fetchSitePlayers("PRIMA_SQUADRA");
-  const data = cmsRoster.length > 0 ? { ...teamPageData, roster: cmsRoster } : teamPageData;
+  // Il database ha sempre priorità: i contenuti statici restano
+  // solo come fallback quando il database è vuoto.
+  const [cmsRoster, cmsStaff] = await Promise.all([
+    fetchSitePlayers("PRIMA_SQUADRA"),
+    fetchSiteTeamStaff("Prima Squadra"),
+  ]);
+
+  const data = {
+    ...teamPageData,
+    roster: cmsRoster.length > 0 ? cmsRoster : teamPageData.roster,
+    technicalStaff: cmsStaff.length > 0 ? cmsStaff : teamPageData.technicalStaff,
+  };
 
   return <TeamLandingPage data={data} />;
 }

@@ -19,9 +19,11 @@ export const metadata = {
 export const revalidate = 300;
 
 export default async function StaffPage() {
-  // Staff dal CMS (gestionale): se una sezione ha membri nel database,
-  // sostituisce quella statica; altrimenti restano i contenuti esistenti.
+  // Il database ha sempre priorità: se contiene almeno un membro dello staff
+  // si mostra SOLO il database; i contenuti statici restano solo come
+  // fallback quando il database è completamente vuoto.
   const cmsStaff = await fetchSiteStaff();
+  const useCms = cmsStaff.length > 0;
 
   return (
     <div>
@@ -34,8 +36,9 @@ export default async function StaffPage() {
       <div className="bg-[var(--club-page)]">
         <div className="page-content">
           {staffCategorySections.map(({ category, subtitle }) => {
-            const cmsMembers = cmsStaff.filter((member) => member.category === category);
-            const members = cmsMembers.length > 0 ? cmsMembers : getStaffByCategory(category);
+            const members = useCms
+              ? cmsStaff.filter((member) => member.category === category)
+              : getStaffByCategory(category);
 
             return (
               <StaffCategorySection

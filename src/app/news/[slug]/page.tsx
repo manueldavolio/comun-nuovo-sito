@@ -31,9 +31,12 @@ export default async function NewsDetailPage({ params }: Props) {
   const item = (await fetchSiteNewsBySlug(slug)) ?? getNewsBySlug(slug);
   if (!item) notFound();
 
+  // Il database ha sempre priorità: le news statiche restano
+  // solo come fallback quando il database è vuoto.
   const cmsNews = await fetchSiteNews();
-  const staticNews = getAllNews().filter((n) => !cmsNews.some((c) => c.slug === n.slug));
-  const allNews = [...cmsNews, ...staticNews].sort((a, b) => b.date.localeCompare(a.date));
+  const allNews = [...(cmsNews.length > 0 ? cmsNews : getAllNews())].sort((a, b) =>
+    b.date.localeCompare(a.date),
+  );
 
   return (
     <article>

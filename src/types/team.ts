@@ -10,20 +10,10 @@ export type TeamPlayer = {
   photo?: string;
 };
 
-export type TechnicalStaffRole =
-  | "Allenatore"
-  | "Vice Allenatore"
-  | "Collaboratore"
-  | "Coordinatrice"
-  | "Preparatore"
-  | "Preparatore Portieri"
-  | "Dirigente"
-  | "Osteopata";
-
 export type TechnicalStaffMember = {
   id: string;
   name: string;
-  role: TechnicalStaffRole;
+  role: string;
   photo?: string;
 };
 

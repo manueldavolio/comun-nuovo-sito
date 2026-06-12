@@ -11,7 +11,7 @@ import {
   type StaffMember,
   type YoutubeVideo,
 } from "@/types/site";
-import type { PlayerRole, TeamPlayer } from "@/types/team";
+import type { PlayerRole, TeamPlayer, TechnicalStaffMember } from "@/types/team";
 
 /**
  * Lettura contenuti CMS (gestionale → Supabase).
@@ -254,6 +254,22 @@ export async function fetchSiteStaff(): Promise<StaffMember[]> {
   } catch {
     return [];
   }
+}
+
+/**
+ * Staff tecnico di una squadra dal CMS (categoria staff omonima).
+ * Vuoto se il database non ha membri per quella categoria.
+ */
+export async function fetchSiteTeamStaff(category: StaffCategoryName): Promise<TechnicalStaffMember[]> {
+  const staff = await fetchSiteStaff();
+  return staff
+    .filter((member) => member.category === category)
+    .map((member) => ({
+      id: member.id,
+      name: member.name,
+      role: member.role,
+      photo: member.photo,
+    }));
 }
 
 /** Sponsor visibili. */

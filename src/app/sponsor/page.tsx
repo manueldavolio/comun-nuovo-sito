@@ -24,9 +24,10 @@ export const metadata = {
 export const revalidate = 300;
 
 export default async function SponsorPage() {
-  // Sponsor dal CMS (gestionale) + eventuali sponsor statici
+  // Il database ha sempre priorità: gli sponsor statici restano
+  // solo come fallback quando il database è vuoto.
   const cmsSponsors = await fetchSiteSponsors();
-  const allSponsors = [...cmsSponsors, ...sponsors.filter((s) => !cmsSponsors.some((c) => c.id === s.id))];
+  const allSponsors = cmsSponsors.length > 0 ? cmsSponsors : sponsors;
 
   return (
     <div>
