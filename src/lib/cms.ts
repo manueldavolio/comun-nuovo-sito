@@ -42,10 +42,13 @@ type SiteNewsRow = {
 
 type SitePlayerRow = {
   id: string;
+  team: string;
   name: string;
-  role: "PORTIERE" | "DIFENSORE" | "CENTROCAMPISTA" | "ATTACCANTE";
+  role: string;
   shirtNumber: number | null;
   photoUrl: string | null;
+  isVisible: boolean | null;
+  sortOrder: number | null;
 };
 
 type SiteStaffRow = {
@@ -98,12 +101,31 @@ export type SiteTeamKey =
 // Mapper
 // ---------------------------------------------------------------------------
 
-const PLAYER_ROLE_MAP: Record<SitePlayerRow["role"], PlayerRole> = {
+const PLAYER_ROLE_MAP: Record<string, PlayerRole> = {
   PORTIERE: "Portiere",
   DIFENSORE: "Difensore",
   CENTROCAMPISTA: "Centrocampista",
   ATTACCANTE: "Attaccante",
 };
+
+function toPlayerRole(value: string): PlayerRole {
+  return PLAYER_ROLE_MAP[value.trim().toUpperCase()] ?? "Centrocampista";
+}
+
+/**
+ * Normalizza una stringa per i confronti: minuscole, senza accenti,
+ * trattini/underscore trasformati in spazi, spazi multipli compressi.
+ * Così "PRIMA_SQUADRA", "Prima Squadra" e "prima-squadra" coincidono.
+ */
+function normalizeKey(value: string): string {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
 const SPONSOR_TIER_MAP: Record<SiteSponsorRow["category"], SponsorTier> = {
   MAIN: "main",
@@ -210,23 +232,66 @@ export async function fetchSitePlayers(team: SiteTeamKey): Promise<TeamPlayer[]>
   try {
     const { data, error } = await supabase
       .from("SitePlayer")
-      .select("id, name, role, shirtNumber, photoUrl")
-      .eq("team", team)
-      .eq("isVisible", true)
-      .order("sortOrder", { ascending: true })
-      .order("name", { ascending: true });
+      .select("id, team, name, role, shirtNumber, photoUrl, isVisible, sortOrder");
 
     if (error || !data) return [];
-    return (data as SitePlayerRow[]).map((row) => ({
-      id: row.id,
-      name: row.name,
-      role: PLAYER_ROLE_MAP[row.role],
-      number: row.shirtNumber,
-      photo: row.photoUrl ?? undefined,
-    }));
+
+    const teamKey = normalizeKey(team);
+    return (data as SitePlayerRow[])
+      // Confronto squadra tolerante ("PRIMA_SQUADRA" = "Prima Squadra" = "prima-squadra")
+      .filter((row) => normalizeKey(row.team ?? "") === teamKey)
+      // Se "isVisible" manca (null) il giocatore è considerato visibile
+      .filter((row) => row.isVisible !== false)
+      .sort(
+        (a, b) =>
+          (a.sortOrder ?? 0) - (b.sortOrder ?? 0) || a.name.localeCompare(b.name, "it"),
+      )
+      .map((row) => ({
+        id: row.id,
+        name: row.name,
+        role: toPlayerRole(row.role),
+        number: row.shirtNumber,
+        photo: row.photoUrl ?? undefined,
+      }));
   } catch {
     return [];
   }
+}
+
+/**
+ * Unisce la rosa statica (codice + foto in public/players) con i giocatori CMS.
+ * - Stesso nome (confronto normalizzato): il CMS aggiorna/sovrascrive il giocatore,
+ *   mantenendo la foto statica se il CMS non ne ha una.
+ * - Giocatore solo nel CMS: viene aggiunto.
+ * - Giocatore solo statico: resta visibile.
+ * I nomi in `excludeNames` vengono rimossi in ogni caso.
+ */
+export function mergeRoster(
+  staticRoster: TeamPlayer[],
+  cmsRoster: TeamPlayer[],
+  excludeNames: string[] = [],
+): TeamPlayer[] {
+  const excluded = new Set(excludeNames.map(normalizeKey));
+  const cmsByName = new Map(cmsRoster.map((player) => [normalizeKey(player.name), player]));
+
+  const merged = staticRoster
+    .filter((player) => !excluded.has(normalizeKey(player.name)))
+    .map((player) => {
+      const cmsPlayer = cmsByName.get(normalizeKey(player.name));
+      if (!cmsPlayer) return player;
+      cmsByName.delete(normalizeKey(player.name));
+      return {
+        ...player,
+        ...cmsPlayer,
+        photo: cmsPlayer.photo ?? player.photo,
+      };
+    });
+
+  for (const [nameKey, cmsPlayer] of cmsByName) {
+    if (!excluded.has(nameKey)) merged.push(cmsPlayer);
+  }
+
+  return merged;
 }
 
 /** Staff del sito raggruppato per categoria. */

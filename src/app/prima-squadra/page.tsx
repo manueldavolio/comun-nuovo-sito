@@ -1,17 +1,18 @@
 import { TeamLandingPage } from "@/components/teams/TeamLandingPage";
 import { teamPageData } from "@/data/teams/prima-squadra";
-import { fetchSitePlayers, fetchSiteTeamStaff } from "@/lib/cms";
+import { fetchSitePlayers, fetchSiteTeamStaff, mergeRoster } from "@/lib/cms";
 
 export const metadata = {
   title: "Prima Squadra",
 };
 
-/** Ricontrolla il database CMS ogni 5 minuti */
-export const revalidate = 300;
+/** Nessuna cache: le modifiche fatte dal CMS sono visibili subito. */
+export const dynamic = "force-dynamic";
+
+/** Giocatori fittizi da non mostrare mai, da qualunque fonte arrivino. */
+const EXCLUDED_PLAYERS = ["Nicolò Rapizza", "Andrea Cormons"];
 
 export default async function PrimaSquadraPage() {
-  // Il database ha sempre priorità: i contenuti statici restano
-  // solo come fallback quando il database è vuoto.
   const [cmsRoster, cmsStaff] = await Promise.all([
     fetchSitePlayers("PRIMA_SQUADRA"),
     fetchSiteTeamStaff("Prima Squadra"),
@@ -19,7 +20,9 @@ export default async function PrimaSquadraPage() {
 
   const data = {
     ...teamPageData,
-    roster: cmsRoster.length > 0 ? cmsRoster : teamPageData.roster,
+    // Rosa base statica + giocatori CMS uniti per nome:
+    // il CMS aggiorna/aggiunge, gli statici non presenti nel CMS restano.
+    roster: mergeRoster(teamPageData.roster, cmsRoster, EXCLUDED_PLAYERS),
     technicalStaff: cmsStaff.length > 0 ? cmsStaff : teamPageData.technicalStaff,
   };
 
