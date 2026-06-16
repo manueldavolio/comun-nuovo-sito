@@ -132,6 +132,6 @@ export type MediaHighlight = {
   title: string;
   subtitle: string;
   tag: string;
-  image: string;
+  image?: string;
   date?: string;
 };
