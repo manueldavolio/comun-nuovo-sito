@@ -24,6 +24,10 @@ type SelectedSection = {
   sectionKey: string;
 };
 
+type DraftState = PageContentInput & {
+  draftKey: string;
+};
+
 function sectionId(section: SelectedSection) {
   return `${section.pageKey}:${section.sectionKey}`;
 }
@@ -59,7 +63,7 @@ export default function AdminPaginePage() {
   const [rows, setRows] = useState<SitePageContentRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [savedAt, setSavedAt] = useState<string | null>(null);
+  const [savedAt, setSavedAt] = useState<{ sectionId: string; time: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const rowMap = useMemo(
@@ -68,9 +72,15 @@ export default function AdminPaginePage() {
   );
 
   const definition = getPageContentDefinition(selected.pageKey, selected.sectionKey);
-  const [draft, setDraft] = useState<PageContentInput>(() =>
-    mergePageContent(firstSection.fallback, null),
-  );
+  const selectedId = sectionId(selected);
+  const selectedContent = definition
+    ? mergePageContent(definition.fallback, rowMap.get(sectionId(definition)))
+    : null;
+  const [draft, setDraft] = useState<DraftState>(() => ({
+    ...mergePageContent(firstSection.fallback, null),
+    draftKey: sectionId(firstSection),
+  }));
+  const currentDraft = draft.draftKey === selectedId ? draft : selectedContent;
 
   useEffect(() => {
     let cancelled = false;
@@ -92,25 +102,30 @@ export default function AdminPaginePage() {
     };
   }, []);
 
-  useEffect(() => {
-    if (!definition) return;
-    setDraft(mergePageContent(definition.fallback, rowMap.get(sectionId(definition))));
-    setSavedAt(null);
-  }, [definition, rowMap]);
-
   async function handleSave(event: React.FormEvent) {
     event.preventDefault();
-    if (!definition) return;
+    if (!definition || !currentDraft) return;
 
     setSaving(true);
     setError(null);
     setSavedAt(null);
 
     try {
-      await adminUpsertPageContent(draft);
+      const input: PageContentInput = {
+        pageKey: currentDraft.pageKey,
+        sectionKey: currentDraft.sectionKey,
+        title: currentDraft.title,
+        subtitle: currentDraft.subtitle,
+        content: currentDraft.content,
+        extraJson: currentDraft.extraJson,
+      };
+      await adminUpsertPageContent(input);
       const nextRows = await adminListPageContents();
       setRows(nextRows);
-      setSavedAt(new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" }));
+      setSavedAt({
+        sectionId: selectedId,
+        time: new Date().toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" }),
+      });
     } catch (err) {
       setError(err instanceof Error ? err.message : "Errore durante il salvataggio.");
     } finally {
@@ -119,7 +134,7 @@ export default function AdminPaginePage() {
   }
 
   if (loading) return <LoadingState />;
-  if (!definition) return <ErrorBanner message="Sezione non trovata." />;
+  if (!definition || !currentDraft) return <ErrorBanner message="Sezione non trovata." />;
 
   return (
     <div>
@@ -169,15 +184,25 @@ export default function AdminPaginePage() {
               <Field key={field.key} label={field.label}>
                 {field.type === "textarea" ? (
                   <textarea
-                    value={getFieldValue(draft, field)}
-                    onChange={(event) => setDraft((current) => setFieldValue(current, field, event.target.value))}
+                    value={getFieldValue(currentDraft, field)}
+                    onChange={(event) =>
+                      setDraft((current) => ({
+                        ...setFieldValue(current.draftKey === selectedId ? current : currentDraft, field, event.target.value),
+                        draftKey: selectedId,
+                      }))
+                    }
                     rows={field.rows ?? 4}
                     className={inputCls}
                   />
                 ) : (
                   <input
-                    value={getFieldValue(draft, field)}
-                    onChange={(event) => setDraft((current) => setFieldValue(current, field, event.target.value))}
+                    value={getFieldValue(currentDraft, field)}
+                    onChange={(event) =>
+                      setDraft((current) => ({
+                        ...setFieldValue(current.draftKey === selectedId ? current : currentDraft, field, event.target.value),
+                        draftKey: selectedId,
+                      }))
+                    }
                     className={inputCls}
                   />
                 )}
@@ -187,7 +212,7 @@ export default function AdminPaginePage() {
 
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-[#e8ecf0] pt-4">
             <p className="text-xs text-[#4a5568]">
-              {savedAt ? `Salvato alle ${savedAt}.` : rowMap.has(sectionId(definition)) ? "Contenuto già salvato nel database." : "Questa sezione usa ancora i testi statici."}
+              {savedAt?.sectionId === sectionId(definition) ? `Salvato alle ${savedAt.time}.` : rowMap.has(sectionId(definition)) ? "Contenuto già salvato nel database." : "Questa sezione usa ancora i testi statici."}
             </p>
             <Button type="submit" disabled={saving}>
               {saving ? "Salvataggio…" : "Salva testi"}

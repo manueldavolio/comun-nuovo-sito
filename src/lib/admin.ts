@@ -170,7 +170,7 @@ export async function adminListPageContents(): Promise<SitePageContentRow[]> {
   const supabase = requireClient();
   const { data, error } = await supabase
     .from("SitePageContent")
-    .select("id, pageKey, sectionKey, title, subtitle, content, extraJson, updatedAt")
+    .select("id, pageKey, sectionKey, title, subtitle, content, extraJson, createdAt, updatedAt")
     .order("pageKey", { ascending: true })
     .order("sectionKey", { ascending: true });
   if (error) throw new Error(error.message);
@@ -179,20 +179,32 @@ export async function adminListPageContents(): Promise<SitePageContentRow[]> {
 
 export async function adminUpsertPageContent(input: PageContentInput) {
   const supabase = requireClient();
-  const id = `${input.pageKey}:${input.sectionKey}`;
-  const { error } = await supabase.from("SitePageContent").upsert(
-    {
-      id,
-      pageKey: input.pageKey,
-      sectionKey: input.sectionKey,
-      title: input.title,
-      subtitle: input.subtitle,
-      content: input.content,
-      extraJson: input.extraJson,
-      updatedAt: nowIso(),
-    },
-    { onConflict: "pageKey,sectionKey" },
-  );
+  const timestamp = nowIso();
+  const values = {
+    pageKey: input.pageKey,
+    sectionKey: input.sectionKey,
+    title: input.title,
+    subtitle: input.subtitle,
+    content: input.content,
+    extraJson: input.extraJson,
+    updatedAt: timestamp,
+  };
+  const { data: existing, error: lookupError } = await supabase
+    .from("SitePageContent")
+    .select("id")
+    .eq("pageKey", input.pageKey)
+    .eq("sectionKey", input.sectionKey)
+    .maybeSingle();
+
+  if (lookupError) throw new Error(lookupError.message);
+
+  const { error } = existing
+    ? await supabase.from("SitePageContent").update(values).eq("id", existing.id)
+    : await supabase.from("SitePageContent").insert({
+        createdAt: timestamp,
+        ...values,
+      });
+
   if (error) throw new Error(error.message);
 }
 

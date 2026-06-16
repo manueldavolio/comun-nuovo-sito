@@ -18,6 +18,8 @@
 
 -- 1. Tabelle ----------------------------------------------------------------
 
+create extension if not exists "pgcrypto";
+
 create table if not exists "SiteNews" (
   "id" text primary key,
   "slug" text not null unique,
@@ -111,13 +113,14 @@ create table if not exists "SiteSettings" (
 );
 
 create table if not exists "SitePageContent" (
-  "id" text primary key,
+  "id" uuid primary key default gen_random_uuid(),
   "pageKey" text not null,
   "sectionKey" text not null,
   "title" text,
   "subtitle" text,
   "content" text,
   "extraJson" jsonb not null default '{}'::jsonb,
+  "createdAt" timestamptz not null default now(),
   "updatedAt" timestamptz not null default now(),
   unique ("pageKey", "sectionKey")
 );

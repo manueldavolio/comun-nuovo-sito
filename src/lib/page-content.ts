@@ -13,10 +13,11 @@ export type SitePageContentRow = {
   subtitle: string | null;
   content: string | null;
   extraJson: Record<string, unknown> | null;
+  createdAt: string | null;
   updatedAt: string | null;
 };
 
-export type PageContentInput = Omit<SitePageContentRow, "id" | "updatedAt">;
+export type PageContentInput = Omit<SitePageContentRow, "id" | "createdAt" | "updatedAt">;
 
 export type EditableField =
   | { key: "title" | "subtitle" | "content"; label: string; type?: "input" | "textarea"; rows?: number }
@@ -274,7 +275,7 @@ export async function fetchPageContentRows(pageKey: string): Promise<SitePageCon
   try {
     const { data, error } = await supabase
       .from("SitePageContent")
-      .select("id, pageKey, sectionKey, title, subtitle, content, extraJson, updatedAt")
+      .select("id, pageKey, sectionKey, title, subtitle, content, extraJson, createdAt, updatedAt")
       .eq("pageKey", pageKey);
 
     if (error || !data) return [];
