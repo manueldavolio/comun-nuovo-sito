@@ -1,4 +1,5 @@
 import { getSupabaseBrowserClient } from "@/lib/supabase-browser";
+import type { PageContentInput, SitePageContentRow } from "@/lib/page-content";
 import type { SiteTeamKey } from "@/lib/cms";
 
 /**
@@ -159,6 +160,40 @@ export async function countRows(table: string): Promise<number> {
   const { count, error } = await supabase.from(table).select("id", { count: "exact", head: true });
   if (error) return 0;
   return count ?? 0;
+}
+
+// ---------------------------------------------------------------------------
+// Contenuti testuali pagine
+// ---------------------------------------------------------------------------
+
+export async function adminListPageContents(): Promise<SitePageContentRow[]> {
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("SitePageContent")
+    .select("id, pageKey, sectionKey, title, subtitle, content, extraJson, updatedAt")
+    .order("pageKey", { ascending: true })
+    .order("sectionKey", { ascending: true });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as SitePageContentRow[];
+}
+
+export async function adminUpsertPageContent(input: PageContentInput) {
+  const supabase = requireClient();
+  const id = `${input.pageKey}:${input.sectionKey}`;
+  const { error } = await supabase.from("SitePageContent").upsert(
+    {
+      id,
+      pageKey: input.pageKey,
+      sectionKey: input.sectionKey,
+      title: input.title,
+      subtitle: input.subtitle,
+      content: input.content,
+      extraJson: input.extraJson,
+      updatedAt: nowIso(),
+    },
+    { onConflict: "pageKey,sectionKey" },
+  );
+  if (error) throw new Error(error.message);
 }
 
 // ---------------------------------------------------------------------------

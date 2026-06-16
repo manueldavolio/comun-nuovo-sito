@@ -3,6 +3,7 @@ import { NewsHero } from "@/components/news/NewsHero";
 import { NewsSidebar } from "@/components/news/NewsSidebar";
 import { getAllNews, slugToCategory } from "@/data/news";
 import { fetchSiteNews } from "@/lib/cms";
+import { fetchPageContentMap, getPageContentDefinition, mergePageContent } from "@/lib/page-content";
 import type { NewsCategory } from "@/types/site";
 
 export const metadata = {
@@ -24,16 +25,21 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
 
   // Il database ha sempre priorità: le news statiche restano
   // solo come fallback quando il database è vuoto.
-  const cmsNews = await fetchSiteNews();
+  const [cmsNews, contentMap] = await Promise.all([
+    fetchSiteNews(),
+    fetchPageContentMap("news"),
+  ]);
   const allNews = [...(cmsNews.length > 0 ? cmsNews : getAllNews())].sort((a, b) =>
     b.date.localeCompare(a.date),
   );
+  const definition = getPageContentDefinition("news", "main");
+  const pageContent = definition ? mergePageContent(definition.fallback, contentMap.get("main")) : null;
 
   const items = categoryFilter ? allNews.filter((n) => n.category === categoryFilter) : allNews;
 
   return (
     <div>
-      <NewsHero />
+      <NewsHero title={pageContent?.title ?? undefined} subtitle={pageContent?.subtitle ?? undefined} />
 
       <div className="bg-[var(--club-page)]">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
@@ -45,7 +51,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
           ) : null}
 
           <div className="grid gap-10 lg:grid-cols-[1fr_320px] xl:grid-cols-[1fr_340px] xl:gap-12">
-            <NewsGrid items={items} categoryFilter={categoria} />
+            <NewsGrid items={items} categoryFilter={categoria} emptyMessage={pageContent?.content ?? undefined} />
             <NewsSidebar activeCategorySlug={categoria} items={allNews} />
           </div>
         </div>

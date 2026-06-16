@@ -8,6 +8,7 @@ import {
   staffJoinCta,
 } from "@/data/staff";
 import { fetchSiteStaff } from "@/lib/cms";
+import { fetchPageContentMap, getPageContentDefinition, mergePageContent, staffSectionKey } from "@/lib/page-content";
 
 export const metadata = {
   title: "Staff",
@@ -22,15 +23,20 @@ export default async function StaffPage() {
   // Il database ha sempre priorità: se contiene almeno un membro dello staff
   // si mostra SOLO il database; i contenuti statici restano solo come
   // fallback quando il database è completamente vuoto.
-  const cmsStaff = await fetchSiteStaff();
+  const [cmsStaff, contentMap] = await Promise.all([
+    fetchSiteStaff(),
+    fetchPageContentMap("staff"),
+  ]);
   const useCms = cmsStaff.length > 0;
+  const heroDefinition = getPageContentDefinition("staff", "hero");
+  const heroContent = heroDefinition ? mergePageContent(heroDefinition.fallback, contentMap.get("hero")) : null;
 
   return (
     <div>
       <StaffHero
         eyebrow={staffHero.eyebrow}
-        title={staffHero.title}
-        subtitle={staffHero.subtitle}
+        title={heroContent?.title ?? staffHero.title}
+        subtitle={heroContent?.subtitle ?? staffHero.subtitle}
       />
 
       <div className="bg-[var(--club-page)]">
@@ -39,12 +45,16 @@ export default async function StaffPage() {
             const members = useCms
               ? cmsStaff.filter((member) => member.category === category)
               : getStaffByCategory(category);
+            const definition = getPageContentDefinition("staff", staffSectionKey(category));
+            const content = definition
+              ? mergePageContent(definition.fallback, contentMap.get(staffSectionKey(category)))
+              : null;
 
             return (
               <StaffCategorySection
                 key={category}
                 title={category}
-                subtitle={subtitle}
+                subtitle={content?.subtitle ?? subtitle}
                 members={members}
               />
             );

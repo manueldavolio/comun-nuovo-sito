@@ -6,9 +6,14 @@ import type { NewsItem } from "@/types/site";
 type NewsGridProps = {
   items: NewsItem[];
   categoryFilter?: string;
+  emptyMessage?: string;
 };
 
-export function NewsGrid({ items, categoryFilter }: NewsGridProps) {
+export function NewsGrid({
+  items,
+  categoryFilter,
+  emptyMessage = "Le news ufficiali verranno pubblicate a breve.",
+}: NewsGridProps) {
   if (items.length === 0) {
     if (categoryFilter) {
       return (
@@ -26,7 +31,7 @@ export function NewsGrid({ items, categoryFilter }: NewsGridProps) {
         badge="COMING SOON"
         eyebrow="News"
         title="News in arrivo"
-        message="Le news ufficiali verranno pubblicate a breve."
+        message={emptyMessage}
       />
     );
   }

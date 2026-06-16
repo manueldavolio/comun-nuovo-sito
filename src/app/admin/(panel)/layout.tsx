@@ -9,6 +9,7 @@ import { getSupabaseBrowserClient } from "@/lib/supabase-browser";
 
 const NAV_ITEMS = [
   { href: "/admin", label: "Dashboard" },
+  { href: "/admin/pagine", label: "Pagine" },
   { href: "/admin/giocatori", label: "Giocatori" },
   { href: "/admin/staff", label: "Staff" },
   { href: "/admin/news", label: "News" },

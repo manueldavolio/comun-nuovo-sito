@@ -6,9 +6,15 @@ import type { BaseActivityCategory } from "@/data/base-activities";
 
 type BaseActivityCategoryPageProps = {
   category: BaseActivityCategory;
+  staffText?: string;
+  ctaText?: string;
 };
 
-export function BaseActivityCategoryPage({ category }: BaseActivityCategoryPageProps) {
+export function BaseActivityCategoryPage({
+  category,
+  staffText = "Il team tecnico di riferimento (in aggiornamento).",
+  ctaText = `Per iscrizioni, orari aggiornati e informazioni sulla categoria ${category.title}, contattaci.`,
+}: BaseActivityCategoryPageProps) {
   return (
     <div>
       <BaseActivitiesHero
@@ -31,7 +37,7 @@ export function BaseActivityCategoryPage({ category }: BaseActivityCategoryPageP
           </section>
 
           <section>
-            <SectionHeading title="Staff categoria" subtitle="Il team tecnico di riferimento (in aggiornamento)." />
+            <SectionHeading title="Staff categoria" subtitle={staffText} />
             <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {category.staffPlaceholder.map((member) => (
                 <li
@@ -85,7 +91,7 @@ export function BaseActivityCategoryPage({ category }: BaseActivityCategoryPageP
               Vuoi saperne di più?
             </h2>
             <p className="mx-auto mt-3 max-w-lg text-base text-slate-600">
-              Per iscrizioni, orari aggiornati e informazioni sulla categoria {category.title}, contattaci.
+              {ctaText}
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
               <ClubButton href="/contatti" variant="primary">

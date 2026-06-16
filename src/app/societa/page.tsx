@@ -2,27 +2,38 @@
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import {
   board,
-  historyInfoBox,
-  historyParagraphs,
   historyTitle,
   safeguardingPolicyUrl,
   safeguardingText,
   safeguardingTitle,
 } from "@/data/society";
+import { contentParagraphs, fetchPageContentMap, mergePageContent } from "@/lib/page-content";
+import { getPageContentDefinition } from "@/lib/page-content";
 
 export const metadata = {
   title: "Società",
 };
 
-export default function SocietaPage() {
+/** Ricontrolla il database CMS ogni 5 minuti */
+export const revalidate = 300;
+
+export default async function SocietaPage() {
+  const contentMap = await fetchPageContentMap("societa");
+  const storiaDefinition = getPageContentDefinition("societa", "storia");
+  const storia = storiaDefinition
+    ? mergePageContent(storiaDefinition.fallback, contentMap.get("storia"))
+    : null;
+  const historyInfoBox = String(storia?.extraJson?.infoBox ?? "");
+  const historyParagraphs = contentParagraphs(storia?.content);
+
   return (
     <div>
       <div className="page-hero">
         <div className="page-hero-inner">
           <SectionHeading
             eyebrow="La nostra identità"
-            title="Società"
-            subtitle="Storia, organi sociali e politiche di tutela: la base del nostro lavoro quotidiano."
+            title={storia?.title ?? "Società"}
+            subtitle={storia?.subtitle ?? "Storia, organi sociali e politiche di tutela: la base del nostro lavoro quotidiano."}
             light
           />
         </div>

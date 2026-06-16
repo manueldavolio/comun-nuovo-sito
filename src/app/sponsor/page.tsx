@@ -13,6 +13,7 @@ import {
   sponsorTierSections,
 } from "@/data/sponsors";
 import { fetchSiteSponsors } from "@/lib/cms";
+import { fetchPageContentMap, getPageContentDefinition, mergePageContent } from "@/lib/page-content";
 
 export const metadata = {
   title: "Sponsor",
@@ -26,15 +27,20 @@ export const revalidate = 300;
 export default async function SponsorPage() {
   // Il database ha sempre priorità: gli sponsor statici restano
   // solo come fallback quando il database è vuoto.
-  const cmsSponsors = await fetchSiteSponsors();
+  const [cmsSponsors, contentMap] = await Promise.all([
+    fetchSiteSponsors(),
+    fetchPageContentMap("sponsor"),
+  ]);
   const allSponsors = cmsSponsors.length > 0 ? cmsSponsors : sponsors;
+  const definition = getPageContentDefinition("sponsor", "main");
+  const pageContent = definition ? mergePageContent(definition.fallback, contentMap.get("main")) : null;
 
   return (
     <div>
       <SponsorHero
         eyebrow={sponsorHero.eyebrow}
-        title={sponsorHero.title}
-        subtitle={sponsorHero.subtitle}
+        title={pageContent?.title ?? sponsorHero.title}
+        subtitle={pageContent?.subtitle ?? sponsorHero.subtitle}
       />
 
       <div className="bg-[var(--club-page)]">
@@ -45,7 +51,7 @@ export default async function SponsorPage() {
                 badge={sponsorsEmptyState.badge}
                 eyebrow="Partner"
                 title={sponsorsEmptyState.title}
-                message={sponsorsEmptyState.message}
+                message={pageContent?.content ?? sponsorsEmptyState.message}
               />
             </div>
           ) : (

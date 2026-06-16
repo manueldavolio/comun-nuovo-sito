@@ -110,6 +110,18 @@ create table if not exists "SiteSettings" (
   "updatedAt" timestamptz not null default now()
 );
 
+create table if not exists "SitePageContent" (
+  "id" text primary key,
+  "pageKey" text not null,
+  "sectionKey" text not null,
+  "title" text,
+  "subtitle" text,
+  "content" text,
+  "extraJson" jsonb not null default '{}'::jsonb,
+  "updatedAt" timestamptz not null default now(),
+  unique ("pageKey", "sectionKey")
+);
+
 -- 2. Row Level Security -----------------------------------------------------
 
 do $$
@@ -118,7 +130,8 @@ declare
 begin
   foreach t in array array[
     'SiteNews', 'SitePlayer', 'SiteStaffMember', 'SiteSponsor',
-    'SiteGalleryAlbum', 'SiteGalleryImage', 'SiteVideo', 'SiteSettings'
+    'SiteGalleryAlbum', 'SiteGalleryImage', 'SiteVideo', 'SiteSettings',
+    'SitePageContent'
   ]
   loop
     execute format('alter table %I enable row level security', t);

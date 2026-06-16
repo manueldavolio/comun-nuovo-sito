@@ -12,6 +12,7 @@ type DashboardCard = {
 };
 
 const CARDS: DashboardCard[] = [
+  { href: "/admin/pagine", label: "Pagine", description: "Testi modificabili delle pagine pubbliche", table: "SitePageContent" },
   { href: "/admin/giocatori", label: "Giocatori", description: "Rose delle squadre: foto, ruoli e numeri", table: "SitePlayer" },
   { href: "/admin/staff", label: "Staff", description: "Dirigenza, allenatori e collaboratori", table: "SiteStaffMember" },
   { href: "/admin/news", label: "News", description: "Articoli pubblicati e bozze", table: "SiteNews" },
