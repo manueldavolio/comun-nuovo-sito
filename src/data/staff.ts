@@ -39,10 +39,10 @@ export const staffMembers: StaffMember[] = [
   {
     id: "dir-2",
     name: "Giuseppe Nobile",
-    role: "Coordinatore Agonistica",
+    role: "Responsabile Forniture e Merchandising",
     category: "Dirigenza",
     photo: staffPhoto(1),
-    description: "Coordina le attività agonistiche e il dialogo tra settori e categorie.",
+    description: "Segue forniture, materiali e merchandising del club a supporto di squadre e famiglie.",
   },
   {
     id: "dir-3",
@@ -71,12 +71,27 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: "dir-6",
-    name: "Miriam Diotti",
-    role: "Osteopata",
+    name: "Roberta Bonetti",
+    role: "Collaboratore",
     category: "Dirigenza",
     photo: staffPhoto(5),
-    description:
-      "Supporta atleti e staff con trattamenti osteopatici per prevenzione, recupero e benessere.",
+    description: "Collabora con la società nelle attività organizzative e di supporto al club.",
+  },
+  {
+    id: "dir-7",
+    name: "Javier Ignacio Perez",
+    role: "Collaboratore",
+    category: "Dirigenza",
+    photo: staffPhoto(0),
+    description: "Collabora con la società nelle attività organizzative e di supporto al club.",
+  },
+  {
+    id: "dir-8",
+    name: "Roberto Feruglio",
+    role: "Collaboratore",
+    category: "Dirigenza",
+    photo: staffPhoto(1),
+    description: "Collabora con la società nelle attività organizzative e di supporto al club.",
   },
   {
     id: "com-1",

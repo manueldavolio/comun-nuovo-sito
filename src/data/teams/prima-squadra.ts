@@ -52,7 +52,6 @@ export const teamPageData = {
     { id: "ps-st-4", name: "Stefano Avogadri", role: "Preparatore Portieri" },
     { id: "ps-st-5", name: "Giuseppe Boccia", role: "Collaboratore" },
     { id: "ps-st-6", name: "Davide Albanese", role: "Collaboratore" },
-    { id: "ps-st-7", name: "Miriam Diotti", role: "Osteopata" },
   ],
   results: [],
   latestMatchday: {

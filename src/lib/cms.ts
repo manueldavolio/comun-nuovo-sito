@@ -23,6 +23,33 @@ import type { PlayerRole, TeamPlayer, TechnicalStaffMember } from "@/types/team"
 const NEWS_FALLBACK_IMAGE = "/images/news/placeholder-1.svg";
 const STAFF_FALLBACK_IMAGE = "/images/staff/placeholder-1.svg";
 const SPONSOR_FALLBACK_IMAGE = "/images/sponsors/placeholder.svg";
+const REMOVED_STAFF_NAMES = new Set(["miriam diotti"]);
+const REQUIRED_STAFF_MEMBERS: StaffMember[] = [
+  {
+    id: "dir-roberta-bonetti",
+    name: "Roberta Bonetti",
+    role: "Collaboratore",
+    category: "Dirigenza",
+    photo: STAFF_FALLBACK_IMAGE,
+    description: "Collabora con la società nelle attività organizzative e di supporto al club.",
+  },
+  {
+    id: "dir-javier-ignacio-perez",
+    name: "Javier Ignacio Perez",
+    role: "Collaboratore",
+    category: "Dirigenza",
+    photo: STAFF_FALLBACK_IMAGE,
+    description: "Collabora con la società nelle attività organizzative e di supporto al club.",
+  },
+  {
+    id: "dir-roberto-feruglio",
+    name: "Roberto Feruglio",
+    role: "Collaboratore",
+    category: "Dirigenza",
+    photo: STAFF_FALLBACK_IMAGE,
+    description: "Collabora con la società nelle attività organizzative e di supporto al club.",
+  },
+];
 
 // ---------------------------------------------------------------------------
 // Tipi righe database (tabelle Site* create dal gestionale)
@@ -144,6 +171,29 @@ function toStaffCategory(value: string): StaffCategoryName {
   return (STAFF_CATEGORIES as readonly string[]).includes(value)
     ? (value as StaffCategoryName)
     : "Dirigenza";
+}
+
+function reconcilePublicStaff(members: StaffMember[]): StaffMember[] {
+  const reconciled = members
+    .filter((member) => !REMOVED_STAFF_NAMES.has(normalizeKey(member.name)))
+    .map((member) =>
+      normalizeKey(member.name) === "giuseppe nobile"
+        ? {
+            ...member,
+            role: "Responsabile Forniture e Merchandising",
+            category: "Dirigenza" as const,
+            description: "Segue forniture, materiali e merchandising del club a supporto di squadre e famiglie.",
+          }
+        : member,
+    );
+
+  for (const requiredMember of REQUIRED_STAFF_MEMBERS) {
+    if (!reconciled.some((member) => normalizeKey(member.name) === normalizeKey(requiredMember.name))) {
+      reconciled.push(requiredMember);
+    }
+  }
+
+  return reconciled;
 }
 
 function extractYoutubeId(url: string): string | null {
@@ -308,14 +358,16 @@ export async function fetchSiteStaff(): Promise<StaffMember[]> {
       .order("name", { ascending: true });
 
     if (error || !data) return [];
-    return (data as SiteStaffRow[]).map((row) => ({
-      id: row.id,
-      name: row.name,
-      role: row.role,
-      category: toStaffCategory(row.category),
-      photo: row.photoUrl || STAFF_FALLBACK_IMAGE,
-      description: row.description ?? "",
-    }));
+    return reconcilePublicStaff(
+      (data as SiteStaffRow[]).map((row) => ({
+        id: row.id,
+        name: row.name,
+        role: row.role,
+        category: toStaffCategory(row.category),
+        photo: row.photoUrl || STAFF_FALLBACK_IMAGE,
+        description: row.description ?? "",
+      })),
+    );
   } catch {
     return [];
   }
