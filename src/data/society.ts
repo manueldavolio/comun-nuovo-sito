@@ -19,7 +19,7 @@ export const board: OrgRole[] = [
   { role: "Segretaria", name: "Laura Terzi" },
   { role: "Safeguarding Officer", name: "Beatrice Austoni" },
   { role: "Direttore Sportivo", name: "Pierangelo Carminati" },
-  { role: "Responsabile Forniture e Merchandising", name: "Giuseppe Nobile" },
+  { role: "Responsabile Rapporti Società e Merchandising", name: "Beppe Nobile" },
   { role: "Responsabile Under 19 e Under 17", name: "Raffaele De Falco" },
   { role: "Responsabile Settore Giovanile", name: "Samuele Guarnieri" },
   { role: "Responsabile Campi", name: "Laura Amadei" },

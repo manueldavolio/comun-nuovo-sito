@@ -38,11 +38,12 @@ export const staffMembers: StaffMember[] = [
   },
   {
     id: "dir-2",
-    name: "Giuseppe Nobile",
-    role: "Responsabile Forniture e Merchandising",
+    name: "Beppe Nobile",
+    role: "Responsabile Rapporti Società e Merchandising",
     category: "Dirigenza",
     photo: staffPhoto(1),
-    description: "Segue forniture, materiali e merchandising del club a supporto di squadre e famiglie.",
+    description:
+      "Cura i rapporti con le società sportive del territorio e coordina le attività legate al merchandising del club.",
   },
   {
     id: "dir-3",

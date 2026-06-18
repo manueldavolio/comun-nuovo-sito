@@ -24,6 +24,7 @@ const NEWS_FALLBACK_IMAGE = "/images/news/placeholder-1.svg";
 const STAFF_FALLBACK_IMAGE = "/images/staff/placeholder-1.svg";
 const SPONSOR_FALLBACK_IMAGE = "/images/sponsors/placeholder.svg";
 const REMOVED_STAFF_NAMES = new Set(["miriam diotti"]);
+const NOBILE_STAFF_NAMES = new Set(["giuseppe nobile", "beppe nobile"]);
 const REQUIRED_STAFF_MEMBERS: StaffMember[] = [
   {
     id: "dir-roberta-bonetti",
@@ -177,12 +178,14 @@ function reconcilePublicStaff(members: StaffMember[]): StaffMember[] {
   const reconciled = members
     .filter((member) => !REMOVED_STAFF_NAMES.has(normalizeKey(member.name)))
     .map((member) =>
-      normalizeKey(member.name) === "giuseppe nobile"
+      NOBILE_STAFF_NAMES.has(normalizeKey(member.name))
         ? {
             ...member,
-            role: "Responsabile Forniture e Merchandising",
+            name: "Beppe Nobile",
+            role: "Responsabile Rapporti Società e Merchandising",
             category: "Dirigenza" as const,
-            description: "Segue forniture, materiali e merchandising del club a supporto di squadre e famiglie.",
+            description:
+              "Cura i rapporti con le società sportive del territorio e coordina le attività legate al merchandising del club.",
           }
         : member,
     );
