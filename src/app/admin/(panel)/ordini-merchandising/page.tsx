@@ -51,6 +51,7 @@ export default function AdminMerchOrdersPage() {
                 <th className="px-4 py-3">Cliente</th>
                 <th className="px-4 py-3">Contatti</th>
                 <th className="px-4 py-3">Prodotto</th>
+                <th className="px-4 py-3">Prezzo</th>
                 <th className="px-4 py-3">Taglia</th>
                 <th className="px-4 py-3">Quantita</th>
                 <th className="px-4 py-3">Stato</th>
@@ -67,6 +68,7 @@ export default function AdminMerchOrdersPage() {
                     <p className="text-xs">{order.email}</p>
                   </td>
                   <td className="px-4 py-3 text-[#001b3d]">{order.productName}</td>
+                  <td className="px-4 py-3 text-[#4a5568]">{formatPrice(order.price)}</td>
                   <td className="px-4 py-3 text-[#4a5568]">{order.size}</td>
                   <td className="px-4 py-3 text-[#4a5568]">{order.quantity}</td>
                   <td className="px-4 py-3">
@@ -92,4 +94,11 @@ function formatDate(value: string): string {
     dateStyle: "short",
     timeStyle: "short",
   }).format(date);
+}
+
+function formatPrice(value: number): string {
+  return new Intl.NumberFormat("it-IT", {
+    style: "currency",
+    currency: "EUR",
+  }).format(value);
 }

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useMemo, useState } from "react";
-import type { MerchandiseProduct } from "@/data/merchandising";
+import { formatMerchPrice, type MerchandiseProduct } from "@/data/merchandising";
 import { getSupabasePublicBrowserClient } from "@/lib/supabase-public-browser";
 
 type MerchandiseProductCardProps = {
@@ -28,7 +28,7 @@ export function MerchandiseProductCard({ product, className = "" }: MerchandiseP
       <div className="relative bg-white">
         <div className="relative flex aspect-[4/5] w-full items-center justify-center bg-white px-5 py-6 sm:px-7 sm:py-8">
           <Image
-            src={product.image}
+            src={product.imageUrl}
             alt={product.name}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -41,7 +41,7 @@ export function MerchandiseProductCard({ product, className = "" }: MerchandiseP
           {product.name}
         </h3>
         <p className="mt-2 flex-1 text-sm leading-relaxed text-slate-600">{product.description}</p>
-        <p className="mt-4 text-sm font-semibold text-[#003f8f]">{product.priceLabel}</p>
+        <p className="mt-4 text-sm font-semibold text-[#003f8f]">{formatMerchPrice(product.price)}</p>
 
         <div className="mt-5 space-y-3 border-t border-slate-100 pt-4">
           <label className="block text-xs font-semibold uppercase tracking-[0.16em] text-slate-500">
@@ -140,6 +140,7 @@ function OrderModal({
 
       const { error: insertError } = await supabase.from("SiteMerchOrder").insert({
         productName: product.name,
+        price: product.price,
         size,
         quantity,
         customerName: customerName.trim(),
@@ -214,9 +215,12 @@ function OrderModal({
             />
           </FieldLabel>
 
-          <div className="grid gap-4 sm:grid-cols-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <FieldLabel label="Prodotto">
               <input value={product.name} readOnly className={`${fieldClassName} bg-slate-50`} />
+            </FieldLabel>
+            <FieldLabel label="Prezzo">
+              <input value={formatMerchPrice(product.price)} readOnly className={`${fieldClassName} bg-slate-50`} />
             </FieldLabel>
             <FieldLabel label={hasClothingSizes ? "Taglia" : "Formato"}>
               <select value={size} onChange={(event) => setSize(event.target.value)} className={fieldClassName}>

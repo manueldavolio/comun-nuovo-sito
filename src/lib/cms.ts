@@ -1,4 +1,5 @@
 import { getSupabaseClient } from "@/lib/supabase";
+import type { MerchandiseProduct } from "@/data/merchandising";
 import {
   NEWS_CATEGORIES,
   STAFF_CATEGORIES,
@@ -108,6 +109,16 @@ type SiteVideoRow = {
   title: string;
   youtubeUrl: string;
   description: string | null;
+};
+
+type SiteMerchProductRow = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  sizes: string[] | null;
+  displayOrder: number | null;
 };
 
 export type SiteSettingsData = {
@@ -479,6 +490,34 @@ export async function fetchSiteVideos(): Promise<YoutubeVideo[]> {
         };
       })
       .filter((video): video is YoutubeVideo => video !== null);
+  } catch {
+    return [];
+  }
+}
+
+/** Prodotti merchandising visibili ordinati per displayOrder. */
+export async function fetchSiteMerchProducts(): Promise<MerchandiseProduct[]> {
+  const supabase = getSupabaseClient();
+  if (!supabase) return [];
+
+  try {
+    const { data, error } = await supabase
+      .from("SiteMerchProduct")
+      .select("id, name, description, price, imageUrl, sizes, displayOrder")
+      .eq("isVisible", true)
+      .order("displayOrder", { ascending: true })
+      .order("createdAt", { ascending: false });
+
+    if (error || !data) return [];
+
+    return (data as SiteMerchProductRow[]).map((row) => ({
+      id: row.id,
+      name: row.name,
+      description: row.description,
+      price: Number(row.price),
+      imageUrl: row.imageUrl,
+      availableSizes: row.sizes?.length ? row.sizes : ["Taglia unica"],
+    }));
   } catch {
     return [];
   }

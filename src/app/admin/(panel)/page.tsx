@@ -20,6 +20,12 @@ const CARDS: DashboardCard[] = [
   { href: "/admin/media", label: "Album foto", description: "Gallerie fotografiche del sito", table: "SiteGalleryAlbum" },
   { href: "/admin/media", label: "Video", description: "Video YouTube in pagina Media", table: "SiteVideo" },
   {
+    href: "/admin/prodotti-merchandising",
+    label: "Prodotti merchandising",
+    description: "Catalogo prodotti mostrato nella pagina merchandising",
+    table: "SiteMerchProduct",
+  },
+  {
     href: "/admin/ordini-merchandising",
     label: "Ordini merchandising",
     description: "Richieste ordine ricevute dalla pagina merchandising",

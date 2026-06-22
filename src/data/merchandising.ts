@@ -2,8 +2,8 @@ export type MerchandiseProduct = {
   id: string;
   name: string;
   description: string;
-  image: string;
-  priceLabel: string;
+  imageUrl: string;
+  price: number;
   availableSizes: string[];
 };
 
@@ -19,8 +19,8 @@ export const merchandiseFeaturedProducts: MerchandiseProduct[] = [
     name: "Maglia Gara Home",
     description:
       "Maglia ufficiale A.S.D. Comun Nuovo, colori biancoazzurri, ideale per partite e rappresentanza.",
-    image: "/maglia.png",
-    priceLabel: "Info in segreteria",
+    imageUrl: "/maglia.png",
+    price: 49.9,
     availableSizes: ["XS", "S", "M", "L", "XL", "XXL"],
   },
   {
@@ -28,8 +28,8 @@ export const merchandiseFeaturedProducts: MerchandiseProduct[] = [
     name: "Felpa Cappuccio con Zip",
     description:
       "Felpa ufficiale biancoazzurra con cappuccio, comoda e perfetta per allenamenti, tempo libero e rappresentanza.",
-    image: "/felpa.png",
-    priceLabel: "Info in segreteria",
+    imageUrl: "/felpa.png",
+    price: 54.9,
     availableSizes: ["XS", "S", "M", "L", "XL", "XXL"],
   },
   {
@@ -37,8 +37,15 @@ export const merchandiseFeaturedProducts: MerchandiseProduct[] = [
     name: "Zaino Stadium III",
     description:
       "Zaino sportivo nero e azzurro con logo A.S.D. Comun Nuovo, capiente e ideale per allenamenti e partite.",
-    image: "/zaino.png",
-    priceLabel: "Info in segreteria",
+    imageUrl: "/zaino.png",
+    price: 34.9,
     availableSizes: ["Taglia unica"],
   },
 ];
+
+export function formatMerchPrice(price: number): string {
+  return new Intl.NumberFormat("it-IT", {
+    style: "currency",
+    currency: "EUR",
+  }).format(price);
+}

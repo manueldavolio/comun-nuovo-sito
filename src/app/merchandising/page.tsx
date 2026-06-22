@@ -2,6 +2,7 @@ import { MerchandiseHero } from "@/components/merchandising/MerchandiseHero";
 import { MerchandiseProductCard } from "@/components/merchandising/MerchandiseProductCard";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { merchandiseFeaturedProducts, merchandiseHero } from "@/data/merchandising";
+import { fetchSiteMerchProducts } from "@/lib/cms";
 
 export const metadata = {
   title: "Merchandising",
@@ -9,7 +10,10 @@ export const metadata = {
     "Abbigliamento e accessori ufficiali A.S.D. Comun Nuovo: maglie, felpe, tute e gadget biancoazzurri.",
 };
 
-export default function MerchandisingPage() {
+export default async function MerchandisingPage() {
+  const dbProducts = await fetchSiteMerchProducts();
+  const products = dbProducts.length > 0 ? dbProducts : merchandiseFeaturedProducts;
+
   return (
     <div>
       <MerchandiseHero
@@ -36,7 +40,7 @@ export default function MerchandisingPage() {
             subtitle="Seleziona prodotto, taglia e quantita: al click su Ordina ora compili il modulo e la richiesta arriva direttamente alla societa."
           />
           <div className="mt-10 grid gap-6 sm:grid-cols-2 sm:gap-7 lg:mt-14 lg:grid-cols-3 lg:gap-8">
-            {merchandiseFeaturedProducts.map((product) => (
+            {products.map((product) => (
               <MerchandiseProductCard key={product.id} product={product} />
             ))}
           </div>

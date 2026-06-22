@@ -88,6 +88,7 @@ export type AdminVideo = {
 export type AdminMerchOrder = {
   id: string;
   productName: string;
+  price: number;
   size: string;
   quantity: number;
   customerName: string;
@@ -96,6 +97,17 @@ export type AdminMerchOrder = {
   notes: string | null;
   status: string;
   createdAt: string;
+};
+
+export type AdminMerchProduct = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  imageUrl: string;
+  sizes: string[];
+  isVisible: boolean;
+  displayOrder: number;
 };
 
 // ---------------------------------------------------------------------------
@@ -443,6 +455,47 @@ export async function adminDeleteVideo(id: string) {
 }
 
 // ---------------------------------------------------------------------------
+// Merchandising products
+// ---------------------------------------------------------------------------
+
+export async function adminListMerchProducts(): Promise<AdminMerchProduct[]> {
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("SiteMerchProduct")
+    .select("id, name, description, price, imageUrl, sizes, isVisible, displayOrder")
+    .order("displayOrder", { ascending: true })
+    .order("name", { ascending: true });
+
+  if (error) throw new Error(error.message);
+
+  return (data ?? []).map((row) => ({
+    ...(row as Omit<AdminMerchProduct, "sizes" | "price"> & { sizes: string[] | null; price: number }),
+    price: Number((row as { price: number }).price),
+    sizes: ((row as { sizes: string[] | null }).sizes ?? []).filter(Boolean),
+  }));
+}
+
+export type MerchProductInput = Omit<AdminMerchProduct, "id">;
+
+export async function adminCreateMerchProduct(input: MerchProductInput) {
+  await insertRow("SiteMerchProduct", {
+    ...input,
+    sizes: input.sizes.length > 0 ? input.sizes : ["Taglia unica"],
+  });
+}
+
+export async function adminUpdateMerchProduct(id: string, input: MerchProductInput) {
+  await updateRow("SiteMerchProduct", id, {
+    ...input,
+    sizes: input.sizes.length > 0 ? input.sizes : ["Taglia unica"],
+  });
+}
+
+export async function adminDeleteMerchProduct(id: string) {
+  await deleteRow("SiteMerchProduct", id);
+}
+
+// ---------------------------------------------------------------------------
 // Merchandising orders
 // ---------------------------------------------------------------------------
 
@@ -450,9 +503,12 @@ export async function adminListMerchOrders(): Promise<AdminMerchOrder[]> {
   const supabase = requireClient();
   const { data, error } = await supabase
     .from("SiteMerchOrder")
-    .select("id, productName, size, quantity, customerName, phone, email, notes, status, createdAt")
+    .select("id, productName, price, size, quantity, customerName, phone, email, notes, status, createdAt")
     .order("createdAt", { ascending: false });
 
   if (error) throw new Error(error.message);
-  return (data ?? []) as AdminMerchOrder[];
+  return (data ?? []).map((row) => ({
+    ...(row as Omit<AdminMerchOrder, "price"> & { price: number }),
+    price: Number((row as { price: number }).price),
+  }));
 }
