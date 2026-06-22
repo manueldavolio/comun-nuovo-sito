@@ -85,6 +85,19 @@ export type AdminVideo = {
   sortOrder: number;
 };
 
+export type AdminMerchOrder = {
+  id: string;
+  productName: string;
+  size: string;
+  quantity: number;
+  customerName: string;
+  phone: string;
+  email: string;
+  notes: string | null;
+  status: string;
+  createdAt: string;
+};
+
 // ---------------------------------------------------------------------------
 // Opzioni per i form
 // ---------------------------------------------------------------------------
@@ -427,4 +440,19 @@ export async function adminUpdateVideo(id: string, input: VideoInput) {
 
 export async function adminDeleteVideo(id: string) {
   await deleteRow("SiteVideo", id);
+}
+
+// ---------------------------------------------------------------------------
+// Merchandising orders
+// ---------------------------------------------------------------------------
+
+export async function adminListMerchOrders(): Promise<AdminMerchOrder[]> {
+  const supabase = requireClient();
+  const { data, error } = await supabase
+    .from("SiteMerchOrder")
+    .select("id, productName, size, quantity, customerName, phone, email, notes, status, createdAt")
+    .order("createdAt", { ascending: false });
+
+  if (error) throw new Error(error.message);
+  return (data ?? []) as AdminMerchOrder[];
 }

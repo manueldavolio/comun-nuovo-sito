@@ -1,14 +1,7 @@
-import { MerchandiseComingSoon } from "@/components/merchandising/MerchandiseComingSoon";
 import { MerchandiseHero } from "@/components/merchandising/MerchandiseHero";
-import { MerchandiseKitSection } from "@/components/merchandising/MerchandiseKitSection";
 import { MerchandiseProductCard } from "@/components/merchandising/MerchandiseProductCard";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import {
-  merchandiseComingSoon,
-  merchandiseFeaturedProducts,
-  merchandiseHero,
-  merchandiseKitSection,
-} from "@/data/merchandising";
+import { merchandiseFeaturedProducts, merchandiseHero } from "@/data/merchandising";
 
 export const metadata = {
   title: "Merchandising",
@@ -38,35 +31,20 @@ export default function MerchandisingPage() {
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
-            eyebrow="Collezione ufficiale"
-            title="In evidenza"
-            subtitle="I prodotti ufficiali A.S.D. Comun Nuovo: maglia, felpa e zaino per partite, allenamenti e rappresentanza."
+            eyebrow="Ordine diretto"
+            title="Prodotti ufficiali"
+            subtitle="Seleziona prodotto, taglia e quantita: al click su Ordina ora compili il modulo e la richiesta arriva direttamente alla societa."
           />
           <div className="mt-10 grid gap-6 sm:grid-cols-2 sm:gap-7 lg:mt-14 lg:grid-cols-3 lg:gap-8">
             {merchandiseFeaturedProducts.map((product) => (
               <MerchandiseProductCard key={product.id} product={product} />
             ))}
           </div>
+          <p className="mt-8 rounded-2xl border border-slate-200 bg-slate-50 px-5 py-4 text-sm leading-relaxed text-slate-600">
+            Pagamento online non attivo: pagamento e ritiro vengono gestiti direttamente dalla societa.
+          </p>
         </div>
       </section>
-
-      <div className="bg-[var(--club-page)]">
-        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
-          <MerchandiseKitSection
-            eyebrow={merchandiseKitSection.eyebrow}
-            title={merchandiseKitSection.title}
-            description={merchandiseKitSection.description}
-            buttonLabel={merchandiseKitSection.buttonLabel}
-            href={merchandiseKitSection.href}
-          />
-        </div>
-      </div>
-
-      <MerchandiseComingSoon
-        eyebrow={merchandiseComingSoon.eyebrow}
-        title={merchandiseComingSoon.title}
-        description={merchandiseComingSoon.description}
-      />
     </div>
   );
 }

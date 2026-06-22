@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { SectionHeading } from "@/components/ui/SectionHeading";
+import { sortStaffByRolePriority } from "@/lib/staff-order";
 import type { TechnicalStaffMember } from "@/types/team";
 
 const STAFF_PHOTOS = [
@@ -14,6 +15,8 @@ type TechnicalStaffGridProps = {
 };
 
 export function TechnicalStaffGrid({ staff }: TechnicalStaffGridProps) {
+  const sortedStaff = sortStaffByRolePriority(staff);
+
   return (
     <section id="staff" className="scroll-section">
       <SectionHeading
@@ -22,7 +25,7 @@ export function TechnicalStaffGrid({ staff }: TechnicalStaffGridProps) {
         subtitle="Allenatori, collaboratori e figure di accompagnamento al gruppo."
       />
       <ul className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4 xl:grid-cols-5">
-        {staff.map((member, index) => {
+        {sortedStaff.map((member, index) => {
           const photo = member.photo ?? STAFF_PHOTOS[index % STAFF_PHOTOS.length];
 
           return (

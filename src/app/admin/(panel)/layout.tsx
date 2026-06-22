@@ -15,6 +15,7 @@ const NAV_ITEMS = [
   { href: "/admin/news", label: "News" },
   { href: "/admin/sponsor", label: "Sponsor" },
   { href: "/admin/media", label: "Media" },
+  { href: "/admin/ordini-merchandising", label: "Ordini merchandising" },
 ];
 
 export default function AdminPanelLayout({ children }: { children: React.ReactNode }) {

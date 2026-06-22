@@ -19,6 +19,12 @@ const CARDS: DashboardCard[] = [
   { href: "/admin/sponsor", label: "Sponsor", description: "Loghi, categorie e link", table: "SiteSponsor" },
   { href: "/admin/media", label: "Album foto", description: "Gallerie fotografiche del sito", table: "SiteGalleryAlbum" },
   { href: "/admin/media", label: "Video", description: "Video YouTube in pagina Media", table: "SiteVideo" },
+  {
+    href: "/admin/ordini-merchandising",
+    label: "Ordini merchandising",
+    description: "Richieste ordine ricevute dalla pagina merchandising",
+    table: "SiteMerchOrder",
+  },
 ];
 
 export default function AdminDashboardPage() {
