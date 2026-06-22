@@ -9,6 +9,7 @@ export const metadata = {
   description:
     "Abbigliamento e accessori ufficiali A.S.D. Comun Nuovo: maglie, felpe, tute e gadget biancoazzurri.",
 };
+export const dynamic = "force-dynamic";
 
 export default async function MerchandisingPage() {
   const dbProducts = await fetchSiteMerchProducts();

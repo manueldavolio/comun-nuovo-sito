@@ -112,12 +112,15 @@ type SiteVideoRow = {
 };
 
 type SiteMerchProductRow = {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  imageUrl: string;
-  sizes: string[] | null;
+  id: string | null;
+  name: string | null;
+  title: string | null;
+  description: string | null;
+  price: number | string | null;
+  imageUrl: string | null;
+  image: string | null;
+  sizes: string[] | string | null;
+  isVisible: boolean | null;
   displayOrder: number | null;
 };
 
@@ -225,6 +228,42 @@ function extractYoutubeId(url: string): string | null {
     }
   }
   return null;
+}
+
+function parseMerchSizes(raw: SiteMerchProductRow["sizes"]): string[] {
+  if (Array.isArray(raw)) {
+    const sizes = raw.map((size) => String(size).trim()).filter(Boolean);
+    return sizes.length > 0 ? sizes : ["Taglia unica"];
+  }
+  if (typeof raw === "string") {
+    const sizes = raw
+      .split(",")
+      .map((size) => size.trim())
+      .filter(Boolean);
+    return sizes.length > 0 ? sizes : ["Taglia unica"];
+  }
+  return ["Taglia unica"];
+}
+
+function mapMerchProductRow(row: SiteMerchProductRow, index: number): MerchandiseProduct {
+  const name = (row.name ?? row.title ?? "").trim() || "Prodotto merchandising";
+  const imageUrl = (row.imageUrl ?? row.image ?? "").trim() || "/maglia.png";
+  const rawPrice =
+    typeof row.price === "number"
+      ? row.price
+      : typeof row.price === "string"
+        ? Number(row.price)
+        : 0;
+  const normalizedPrice = Number.isFinite(rawPrice) && rawPrice >= 0 ? rawPrice : 0;
+
+  return {
+    id: row.id?.trim() || `merch-${normalizeKey(name).replace(/\s+/g, "-")}-${index}`,
+    name,
+    description: (row.description ?? "").trim(),
+    price: normalizedPrice,
+    imageUrl,
+    availableSizes: parseMerchSizes(row.sizes),
+  };
 }
 
 function mapNewsRow(row: SiteNewsRow): NewsItem {
@@ -503,21 +542,16 @@ export async function fetchSiteMerchProducts(): Promise<MerchandiseProduct[]> {
   try {
     const { data, error } = await supabase
       .from("SiteMerchProduct")
-      .select("id, name, description, price, imageUrl, sizes, displayOrder")
+      .select("*")
       .eq("isVisible", true)
       .order("displayOrder", { ascending: true })
       .order("createdAt", { ascending: false });
 
     if (error || !data) return [];
 
-    return (data as SiteMerchProductRow[]).map((row) => ({
-      id: row.id,
-      name: row.name,
-      description: row.description,
-      price: Number(row.price),
-      imageUrl: row.imageUrl,
-      availableSizes: row.sizes?.length ? row.sizes : ["Taglia unica"],
-    }));
+    return (data as SiteMerchProductRow[])
+      .filter((row) => row.isVisible === true)
+      .map((row, index) => mapMerchProductRow(row, index));
   } catch {
     return [];
   }
