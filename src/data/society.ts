@@ -28,6 +28,7 @@ export const board: OrgRole[] = [
   { role: "Collaboratore", name: "Roberto Feruglio" },
   { role: "Social Media Manager", name: "Angela Pannullo" },
   { role: "Addetta Stampa", name: "Romina Sorbelli" },
+  { role: "Manutentore Campi", name: "Diego Barbò" },
 ];
 
 export const safeguardingTitle = "Safeguarding Policy";
