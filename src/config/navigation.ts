@@ -1,8 +1,14 @@
+import { merchandisingShopUrl } from "@/data/site";
+
 export type NavItem = {
   label: string;
   href: string;
   children?: { label: string; href: string }[];
 };
+
+export function isExternalHref(href: string) {
+  return href.startsWith("https://") || href.startsWith("http://");
+}
 
 export const mainNav: NavItem[] = [
   { label: "Home", href: "/" },
@@ -41,7 +47,7 @@ export const mainNav: NavItem[] = [
   { label: "News", href: "/news" },
   { label: "Media", href: "/media" },
   { label: "Sponsor", href: "/sponsor" },
-  { label: "Merchandising", href: "/merchandising" },
+  { label: "Merchandising", href: merchandisingShopUrl },
   { label: "Collaborazioni", href: "/collaborazioni" },
 ];
 

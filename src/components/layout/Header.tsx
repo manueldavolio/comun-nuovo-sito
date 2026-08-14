@@ -4,8 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { NavDropdown } from "@/components/layout/NavDropdown";
-import { mainNav } from "@/config/navigation";
+import { isExternalHref, mainNav } from "@/config/navigation";
 import { clubNameFormal, contacts, gestionaleUrl } from "@/data/site";
+
+function externalLinkProps(href: string) {
+  if (!isExternalHref(href)) return {};
+  return { target: "_blank" as const, rel: "noopener noreferrer" };
+}
 
 function SocialIconInstagram({ className }: { className?: string }) {
   return (
@@ -114,7 +119,7 @@ export function Header() {
               item.children ? (
                 <NavDropdown key={item.href} item={item} />
               ) : (
-                <Link key={item.href} href={item.href} className={navLinkClass}>
+                <Link key={item.href} href={item.href} className={navLinkClass} {...externalLinkProps(item.href)}>
                   {item.label}
                 </Link>
               ),
@@ -229,6 +234,7 @@ export function Header() {
                       href={item.href}
                       className="block rounded-md px-3 py-3 text-[14px] font-bold uppercase tracking-wide text-[#001b3d]"
                       onClick={() => closeMobileNav()}
+                      {...externalLinkProps(item.href)}
                     >
                       {item.label}
                     </Link>

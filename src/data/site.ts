@@ -6,6 +6,10 @@ export const clubLogoPath = "/logo.png";
 /** Area riservata staff / gestionale (apre in nuova scheda dalla navbar) */
 export const gestionaleUrl = "https://comun-nuovo-gestionale.vercel.app/";
 
+/** Shop ufficiale merchandising (Onis Italia) */
+export const merchandisingShopUrl =
+  "https://teamshop.onisitalia.it/product-category/asd-comun-nuovo/";
+
 /** Nome ufficiale senza la parola “Calcio” nel titolo societario */
 export const clubName = "ASD Comun Nuovo";
 export const clubShortName = "Comun Nuovo";

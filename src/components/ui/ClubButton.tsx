@@ -26,8 +26,14 @@ export function ClubButton({
       "text-sky-100 hover:bg-white/10",
   };
 
+  const external = href.startsWith("https://") || href.startsWith("http://");
+
   return (
-    <Link href={href} className={`${base} ${variants[variant]} ${className}`}>
+    <Link
+      href={href}
+      className={`${base} ${variants[variant]} ${className}`}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+    >
       {children}
     </Link>
   );
