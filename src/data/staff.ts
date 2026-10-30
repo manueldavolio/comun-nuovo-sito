@@ -242,32 +242,32 @@ export const staffMembers: StaffMember[] = [
   {
     id: "adb-es-1",
     name: "Stefano Avogadri",
-    role: "Allenatore · Esordienti",
-    category: "Attività di Base",
+    role: "Allenatore",
+    category: "Esordienti",
     photo: staffPhoto(19),
     description: "Guida la categoria Esordienti con attenzione a tecnica, gioco e spirito di squadra.",
   },
   {
     id: "adb-es-2",
     name: "Leonardo Scalzullo",
-    role: "Vice Allenatore · Esordienti",
-    category: "Attività di Base",
+    role: "Vice Allenatore",
+    category: "Esordienti",
     photo: staffPhoto(20),
     description: "Supporta il percorso formativo degli Esordienti in campo e fuori.",
   },
   {
     id: "adb-pu-1",
     name: "Alberto Persico",
-    role: "Allenatore · Pulcini",
-    category: "Attività di Base",
+    role: "Allenatore",
+    category: "Pulcini",
     photo: staffPhoto(21),
     description: "Accompagna i Pulcini con giochi, regole semplici e tanto divertimento.",
   },
   {
     id: "adb-pu-2",
     name: "Matteo Cattaneo",
-    role: "Vice Allenatore · Pulcini",
-    category: "Attività di Base",
+    role: "Vice Allenatore",
+    category: "Pulcini",
     photo: staffPhoto(22),
     description: "Affianca l’allenatore nella gestione quotidiana della categoria Pulcini.",
   },
@@ -301,7 +301,11 @@ export const staffCategorySections: { category: StaffCategoryName; subtitle?: st
         ? "Le figure che guidano organizzazione, sport e rapporti istituzionali."
         : category === "Comunicazione"
           ? "Social, stampa e contenuti: il volto del club online e con i media."
-          : category === "Attività di Base"
-            ? "Il cuore formativo per i più piccoli e le prime esperienze con il pallone."
-            : undefined,
+          : category === "Esordienti"
+            ? "Staff tecnico della categoria Esordienti."
+            : category === "Pulcini"
+              ? "Staff tecnico della categoria Pulcini."
+              : category === "Attività di Base"
+                ? "Il cuore formativo per i più piccoli e le prime esperienze con il pallone."
+                : undefined,
   }));

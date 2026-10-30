@@ -1,20 +1,33 @@
 import Link from "next/link";
 import { BaseActivitiesHero } from "@/components/base-activities/BaseActivitiesHero";
+import { TeamRosterGrid } from "@/components/teams/TeamRosterGrid";
+import { TechnicalStaffGrid } from "@/components/teams/TechnicalStaffGrid";
 import { ClubButton } from "@/components/ui/ClubButton";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import type { BaseActivityCategory } from "@/data/base-activities";
+import type { RosterEmptyState, TeamPlayer, TechnicalStaffMember } from "@/types/team";
 
 type BaseActivityCategoryPageProps = {
   category: BaseActivityCategory;
   staffText?: string;
   ctaText?: string;
+  /** Se valorizzato, mostra la rosa come nelle pagine Under. */
+  roster?: TeamPlayer[];
+  technicalStaff?: TechnicalStaffMember[];
+  rosterEmptyState?: RosterEmptyState;
 };
 
 export function BaseActivityCategoryPage({
   category,
   staffText = "Il team tecnico di riferimento (in aggiornamento).",
   ctaText = `Per iscrizioni, orari aggiornati e informazioni sulla categoria ${category.title}, contattaci.`,
+  roster,
+  technicalStaff,
+  rosterEmptyState,
 }: BaseActivityCategoryPageProps) {
+  const showTeamRoster = roster !== undefined;
+  const showTechnicalStaff = technicalStaff !== undefined;
+
   return (
     <div>
       <BaseActivitiesHero
@@ -36,20 +49,35 @@ export function BaseActivityCategoryPage({
             </article>
           </section>
 
-          <section>
-            <SectionHeading title="Staff categoria" subtitle={staffText} />
-            <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {category.staffPlaceholder.map((member) => (
-                <li
-                  key={`${member.role}-${member.name}`}
-                  className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-md shadow-slate-900/[0.04] sm:p-6"
-                >
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-sky-600">{member.role}</p>
-                  <p className="mt-3 font-display text-xl uppercase tracking-wide text-slate-900">{member.name}</p>
-                </li>
-              ))}
-            </ul>
-          </section>
+          {showTeamRoster ? (
+            <TeamRosterGrid players={roster} emptyState={rosterEmptyState} />
+          ) : null}
+
+          {showTechnicalStaff ? (
+            technicalStaff.length > 0 ? (
+              <TechnicalStaffGrid staff={technicalStaff} />
+            ) : (
+              <section>
+                <SectionHeading title="Staff categoria" subtitle={staffText} />
+                <p className="mt-6 text-sm text-slate-600 sm:text-base">Staff tecnico in aggiornamento.</p>
+              </section>
+            )
+          ) : (
+            <section>
+              <SectionHeading title="Staff categoria" subtitle={staffText} />
+              <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {category.staffPlaceholder.map((member) => (
+                  <li
+                    key={`${member.role}-${member.name}`}
+                    className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-md shadow-slate-900/[0.04] sm:p-6"
+                  >
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-sky-600">{member.role}</p>
+                    <p className="mt-3 font-display text-xl uppercase tracking-wide text-slate-900">{member.name}</p>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
 
           <section>
             <SectionHeading title="Giorni e allenamenti" subtitle="Programma indicativo — orari e calendario da confermare." />

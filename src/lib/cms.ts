@@ -137,7 +137,20 @@ export type SiteTeamKey =
   | "UNDER_19"
   | "UNDER_17"
   | "UNDER_15"
+  | "ESORDIENTI"
+  | "PULCINI"
   | "CALCIO_A_5_C2";
+
+/** Categorie attività di base con rosa e staff dedicati. */
+export const BASE_ACTIVITY_TEAM_BY_SLUG = {
+  esordienti: { team: "ESORDIENTI", staffCategory: "Esordienti" },
+  pulcini: { team: "PULCINI", staffCategory: "Pulcini" },
+} as const satisfies Record<
+  string,
+  { team: SiteTeamKey; staffCategory: StaffCategoryName }
+>;
+
+export type BaseActivityTeamSlug = keyof typeof BASE_ACTIVITY_TEAM_BY_SLUG;
 
 // ---------------------------------------------------------------------------
 // Mapper
@@ -434,6 +447,33 @@ export async function fetchSiteTeamStaff(category: StaffCategoryName): Promise<T
   const staff = await fetchSiteStaff();
   return staff
     .filter((member) => member.category === category)
+    .map((member) => ({
+      id: member.id,
+      name: member.name,
+      role: member.role,
+      photo: member.photo,
+    }));
+}
+
+/**
+ * Staff per Esordienti/Pulcini: usa la categoria dedicata se presente,
+ * altrimenti recupera i membri "Attività di Base" il cui ruolo cita la categoria
+ * (compatibilità con dati CMS già esistenti, senza modificarli).
+ */
+export async function fetchBaseActivityTeamStaff(
+  staffCategory: "Esordienti" | "Pulcini",
+): Promise<TechnicalStaffMember[]> {
+  const dedicated = await fetchSiteTeamStaff(staffCategory);
+  if (dedicated.length > 0) return dedicated;
+
+  const staff = await fetchSiteStaff();
+  const categoryKey = normalizeKey(staffCategory);
+  return staff
+    .filter(
+      (member) =>
+        member.category === "Attività di Base" &&
+        normalizeKey(member.role).includes(categoryKey),
+    )
     .map((member) => ({
       id: member.id,
       name: member.name,

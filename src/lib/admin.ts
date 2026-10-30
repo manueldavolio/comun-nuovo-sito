@@ -120,6 +120,8 @@ export const TEAM_OPTIONS: { value: SiteTeamKey; label: string }[] = [
   { value: "UNDER_19", label: "Under 19" },
   { value: "UNDER_17", label: "Under 17" },
   { value: "UNDER_15", label: "Under 15" },
+  { value: "ESORDIENTI", label: "Esordienti" },
+  { value: "PULCINI", label: "Pulcini" },
   { value: "CALCIO_A_5_C2", label: "Calcio a 5 C2" },
 ];
 

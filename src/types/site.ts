@@ -35,6 +35,8 @@ export const STAFF_CATEGORIES = [
   "Under 19",
   "Under 17",
   "Under 15",
+  "Esordienti",
+  "Pulcini",
   "Attività di Base",
 ] as const;
 
