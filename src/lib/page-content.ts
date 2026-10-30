@@ -2,6 +2,7 @@ import { baseActivityCategories, type BaseActivityCategory } from "@/data/base-a
 import { sponsorsEmptyState, sponsorHero } from "@/data/sponsors";
 import { staffCategorySections, staffHero } from "@/data/staff";
 import { historyInfoBox, historyParagraphs } from "@/data/society";
+import { defaultPrimaSquadraTuttocampoWidgets } from "@/data/teams/tuttocampo-prima-squadra";
 import { getSupabaseClient } from "@/lib/supabase";
 import type { StaffCategoryName } from "@/types/site";
 
@@ -85,6 +86,42 @@ export const PAGE_CONTENT_GROUPS: PageContentGroupDefinition[] = [
           { key: "subtitle", label: "Sottotitolo", type: "textarea", rows: 3 },
           { key: "content", label: "Testo storia", type: "textarea", rows: 9 },
           { key: "infoBox", label: "Box informativo finale", type: "textarea", rows: 4, extra: true },
+        ],
+      },
+    ],
+  },
+  {
+    pageKey: "prima-squadra",
+    label: "Prima Squadra / Tuttocampo",
+    description: "URL dei widget ufficiali Tuttocampo per risultati, classifica e partite.",
+    sections: [
+      {
+        pageKey: "prima-squadra",
+        sectionKey: "tuttocampo",
+        label: "Widget Tuttocampo",
+        description: "Lascia vuoto un campo per usare l’URL predefinito del girone corrente.",
+        fallback: {
+          pageKey: "prima-squadra",
+          sectionKey: "tuttocampo",
+          title: "Widget Tuttocampo",
+          subtitle: "Prima Categoria Lombardia — Girone L 2026/27",
+          content: "",
+          extraJson: {
+            competitionLabel: "Prima Categoria Lombardia — Girone L",
+            lastMatchUrl: defaultPrimaSquadraTuttocampoWidgets.lastMatchUrl,
+            nextMatchUrl: defaultPrimaSquadraTuttocampoWidgets.nextMatchUrl,
+            resultsUrl: defaultPrimaSquadraTuttocampoWidgets.resultsUrl,
+            standingsUrl: defaultPrimaSquadraTuttocampoWidgets.standingsUrl,
+            scorersUrl: defaultPrimaSquadraTuttocampoWidgets.scorersUrl,
+          },
+        },
+        fields: [
+          { key: "competitionLabel", label: "Etichetta campionato", extra: true },
+          { key: "lastMatchUrl", label: "URL widget Ultima partita", type: "textarea", rows: 2, extra: true },
+          { key: "nextMatchUrl", label: "URL widget Prossima partita", type: "textarea", rows: 2, extra: true },
+          { key: "resultsUrl", label: "URL widget Risultati", type: "textarea", rows: 2, extra: true },
+          { key: "standingsUrl", label: "URL widget Classifica", type: "textarea", rows: 2, extra: true },
+          { key: "scorersUrl", label: "URL widget Marcatori", type: "textarea", rows: 2, extra: true },
         ],
       },
     ],

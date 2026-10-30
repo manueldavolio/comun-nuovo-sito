@@ -1,3 +1,4 @@
+import type { TuttocampoWidgetsConfig } from "@/data/teams/tuttocampo-prima-squadra";
 import type { MatchResult, StandingRow } from "@/types/site";
 
 export type PlayerRole = "Portiere" | "Difensore" | "Centrocampista" | "Attaccante";
@@ -65,4 +66,6 @@ export type TeamPageData = {
   latestMatchday?: LatestMatchday;
   standingsSubtitle?: string;
   rosterEmptyState?: RosterEmptyState;
+  /** Se valorizzato, sostituisce risultati/classifica statici con iframe Tuttocampo. */
+  tuttocampoWidgets?: TuttocampoWidgetsConfig;
 };

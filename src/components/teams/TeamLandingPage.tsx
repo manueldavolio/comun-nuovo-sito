@@ -5,7 +5,9 @@ import { TeamLatestResults } from "@/components/teams/TeamLatestResults";
 import { TeamResultsTable } from "@/components/teams/TeamResultsTable";
 import { TeamRosterGrid } from "@/components/teams/TeamRosterGrid";
 import { TeamStandingsCompact } from "@/components/teams/TeamStandingsCompact";
+import { TeamTuttocampoWidgets } from "@/components/teams/TeamTuttocampoWidgets";
 import { TechnicalStaffGrid } from "@/components/teams/TechnicalStaffGrid";
+import { hasAnyTuttocampoWidget } from "@/data/teams/tuttocampo-prima-squadra";
 import type { TeamPageData } from "@/types/team";
 
 type TeamLandingPageProps = {
@@ -13,11 +15,13 @@ type TeamLandingPageProps = {
 };
 
 export function TeamLandingPage({ data }: TeamLandingPageProps) {
+  const showTuttocampo = Boolean(data.tuttocampoWidgets && hasAnyTuttocampoWidget(data.tuttocampoWidgets));
   const hasCompetitionData =
-    Boolean(data.latestMatchday) ||
-    data.results.length > 0 ||
-    data.standings.length > 0 ||
-    Boolean(data.nextMatch);
+    !showTuttocampo &&
+    (Boolean(data.latestMatchday) ||
+      data.results.length > 0 ||
+      data.standings.length > 0 ||
+      Boolean(data.nextMatch));
 
   return (
     <>
@@ -30,6 +34,12 @@ export function TeamLandingPage({ data }: TeamLandingPageProps) {
             <div className="mb-12 sm:mb-14">
               <TeamCompetitionBanner label={data.competitionLabel} />
             </div>
+          ) : null}
+          {showTuttocampo && data.tuttocampoWidgets ? (
+            <TeamTuttocampoWidgets
+              widgets={data.tuttocampoWidgets}
+              competitionLabel={data.competitionLabel}
+            />
           ) : null}
           {hasCompetitionData ? (
             <>

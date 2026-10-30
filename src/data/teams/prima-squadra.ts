@@ -1,25 +1,10 @@
 import type { TeamPageData } from "@/types/team";
-import type { StandingRow } from "@/types/site";
-
-function standing(position: number, team: string, points: number): StandingRow {
-  return {
-    position,
-    team,
-    points,
-    played: 30,
-    won: 0,
-    drawn: 0,
-    lost: 0,
-    goalsFor: 0,
-    goalsAgainst: 0,
-  };
-}
+import { defaultPrimaSquadraTuttocampoWidgets } from "@/data/teams/tuttocampo-prima-squadra";
 
 export const teamPageData = {
   teamLabel: "Prima Squadra",
-  teamSeason: "2025/2026",
-  competitionLabel: "Prima Categoria — Girone M",
-  standingsSubtitle: "Aggiornata alla 30ª giornata.",
+  teamSeason: "2026/2027",
+  competitionLabel: "Prima Categoria Lombardia — Girone L",
   hero: {
     title: "PRIMA SQUADRA",
     subtitle: "Il cuore agonistico biancoazzurro.",
@@ -54,79 +39,9 @@ export const teamPageData = {
     { id: "ps-st-6", name: "Davide Albanese", role: "Collaboratore" },
   ],
   results: [],
-  latestMatchday: {
-    round: 30,
-    date: "2026-04-26",
-    matches: [
-      {
-        id: "g30-1",
-        homeTeam: "Accademia Isola Bergamasca",
-        awayTeam: "Comun Nuovo",
-        homeGoals: 4,
-        awayGoals: 4,
-      },
-      {
-        id: "g30-2",
-        homeTeam: "Audace Osnago",
-        awayTeam: "Revolutional Carvico",
-        homeGoals: 1,
-        awayGoals: 4,
-      },
-      {
-        id: "g30-3",
-        homeTeam: "Cassina Calcio",
-        awayTeam: "Carugate",
-        homeGoals: 2,
-        awayGoals: 1,
-      },
-      {
-        id: "g30-4",
-        homeTeam: "Cavenago",
-        awayTeam: "Roncola",
-        homeGoals: 2,
-        awayGoals: 2,
-      },
-      {
-        id: "g30-5",
-        homeTeam: "Città Di Cornate",
-        awayTeam: "Atletico Grignano",
-        homeGoals: 0,
-        awayGoals: 3,
-      },
-      {
-        id: "g30-6",
-        homeTeam: "Cosov",
-        awayTeam: "Football Club Cernusco",
-        homeGoals: 2,
-        awayGoals: 2,
-      },
-      {
-        id: "g30-7",
-        homeTeam: "Monvico",
-        awayTeam: "Nuova Usmate",
-        homeGoals: 2,
-        awayGoals: 1,
-      },
-    ],
-  },
-  standings: [
-    standing(1, "BMS Tritium Next Gen", 59),
-    standing(2, "Cassina Calcio", 58),
-    standing(3, "Cavenago", 56),
-    standing(4, "Nuova Usmate", 52),
-    standing(5, "Monvico", 49),
-    standing(6, "Atletico Grignano", 41),
-    standing(7, "Accademia Isola Bergamasca", 38),
-    standing(8, "Audace Osnago", 37),
-    standing(9, "Città Di Cornate", 33),
-    standing(10, "Comun Nuovo", 30),
-    standing(11, "Revolutional Carvico", 29),
-    standing(12, "Football Club Cernusco", 28),
-    standing(13, "Carugate", 24),
-    standing(14, "Roncola", 22),
-    standing(15, "Cosov", 20),
-  ],
+  standings: [],
   highlightTeam: "Comun Nuovo",
+  tuttocampoWidgets: defaultPrimaSquadraTuttocampoWidgets,
 } satisfies TeamPageData;
 
 export const { teamLabel, teamSeason } = teamPageData;
